@@ -15,33 +15,43 @@ show = ep.equationToString
 def main():
 
 	equations = []
+	
+	displayEquations = []
+
 	equivalencies = []
 	rewrites = {}
+
 	
 	while True:
-		printState(equations,equivalencies,rewrites)
+		try:
+			printState(displayEquations,equivalencies,rewrites)
 
-		instruction = raw_input(">> ")
+			instruction = raw_input(">> ")
 
-		if instruction == "":
-			pass
-		elif instruction[:5]=="add e":
-			equations.append(ep.Equation(instruction[12:]))
-		elif instruction[:5]=="rewri":
-			arg = instruction.split()[1]
-			rewrites[arg] = ss.rewrite(arg,equations)
-		elif instruction[:5]=="decla":
-			equivalencies.append(instruction.split()[2:])
-		elif instruction[:5]=="resta":
-			args = instruction.split()
-			rewrites[args[1]] = ss.removeTerm(rewrites[args[1]],args[3],
-										equations[int(args[5])],equivalencies)
-		elif instruction=="quit":
-			return
-		else:
-			print "Instruction not understood"
+			if instruction == "":
+				pass
+			elif instruction[:5]=="add e":
+				equations.append(ep.Equation(instruction[12:]))
+				displayEquations.append(instruction[12:].strip())
+			elif instruction[:5]=="rewri":
+				arg = instruction.split()[1]
+				rewrites[arg] = rewrite(arg,equations)
+			elif instruction[:5]=="decla":
+				equivalencies.append(instruction.split()[2:])
+			elif instruction[:5]=="resta":
+				args = instruction.split()
+				rewrites[args[1]] = ss.removeTerm(rewrites[args[1]],args[3],
+											equations[int(args[5])],equivalencies)
+			elif instruction=="quit":
+				return
+			else:
+				print "Instruction not understood"
 
-		print
+			print
+		except Exception as e:
+			print "Something broke!"
+			print e
+			print
 
 def rewrite(arg,equations):
 	for equation in equations:
@@ -53,7 +63,7 @@ def printState(equations,equivalencies,rewrites):
 	if equations:
 		print "Equations:"
 		for (pos,a) in enumerate(equations):
-			print "Equation %d: "%pos,a,"= 1"
+			print "Equation %d: "%pos,a
 	else:
 		print "No equations"
 	

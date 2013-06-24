@@ -1,0 +1,90 @@
+----README----
+
+This is the very first draft of my equation manipulator. It solves equations
+sometimes. Currently, it's limited to equations which are the product of 
+variables to various powers and a constant. Usage is via a crappy command
+line interface.
+
+I plan to use this version as a stepping stone for later versions.
+
+
+----Simple CLI example----
+
+Here's a sample session with the CLI, solving the age old problem of how fast an
+object will hit the ground given the height at which it started falling.
+
+
+$ python commandLineInterface.py
+No equations
+
+No equivalencies
+
+No rewrites
+
+>> add equation KE = 0.5 m1 v^2
+
+Equations:
+Equation 0:  KE = 0.5 m1 v^2
+
+No equivalencies
+
+No rewrites
+
+>> add equation PE = m2 g h
+
+Equations:
+Equation 0:  KE = 0.5 m1 v^2
+Equation 1:  PE = m2 g h
+
+No equivalencies
+
+No rewrites
+
+>> declare equal m1 m2
+
+Equations:
+Equation 0:  KE = 0.5 m1 v^2
+Equation 1:  PE = m2 g h
+
+Equivalencies:
+m1=m2
+
+No rewrites
+
+>> declare equal KE PE
+
+Equations:
+Equation 0:  KE = 0.5 m1 v^2
+Equation 1:  PE = m2 g h
+
+Equivalencies:
+m1=m2
+KE=PE
+
+No rewrites
+
+>> rewrite v
+
+Equations:
+Equation 0:  KE = 0.5 m1 v^2
+Equation 1:  PE = m2 g h
+
+Equivalencies:
+m1=m2
+KE=PE
+
+Rewrites:
+v  =  0.707106781187 m1^(-1/2) KE^(1/2)
+
+>> restate v without KE using 1
+
+Equations:
+Equation 0:  KE = 0.5 m1 v^2
+Equation 1:  PE = m2 g h
+
+Equivalencies:
+m1=m2
+KE=PE
+
+Rewrites:
+v  =  0.707106781187 h^(1/2) g^(1/2)
