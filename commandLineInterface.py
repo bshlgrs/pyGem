@@ -13,10 +13,11 @@ show = ep.equationToString
 # restate v without Ek using 2
 
 def main():
-	equations = [ep.Equation("ek = 0.5 m1 v^2"),ep.Equation("ep = m2 g h")]
-	equivalencies = [["m1","m2"],["ek","ep"]]
-	rewrites = {"v":ss.rearrange(equations[0],"v")}
 
+	equations = []
+	equivalencies = []
+	rewrites = {}
+	
 	while True:
 		printState(equations,equivalencies,rewrites)
 
@@ -78,3 +79,7 @@ def printState(equations,equivalencies,rewrites):
 
 if __name__ == '__main__':
 	main()
+
+	# equations = [ep.Equation("ek = 0.5 m1 v^2"),ep.Equation("ep = m2 g h")]
+	# equivalencies = [["m1","m2"],["ek","ep"]]
+	# rewrites = {"v":ss.rearrange(equations[0],"v")}
