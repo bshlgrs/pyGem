@@ -1,4 +1,4 @@
-# equationParse.py
+# equation.py
 
 class Equation():
     def __init__(self,instr=None):

@@ -1,7 +1,7 @@
 # simpleInterface.py
 
 import simpleSolver as ss
-import equationParse as ep
+import equation as ep
 
 show = ep.equationToString
 
@@ -20,7 +20,6 @@ def main():
 
 	equivalencies = []
 	rewrites = {}
-
 	
 	while True:
 		try:

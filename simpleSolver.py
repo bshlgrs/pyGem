@@ -1,7 +1,9 @@
-from equationParse import Equation
-
+from equation import Equation
 
 _debug = True
+
+# We assume that each variable name is only in one place in all the formulas.
+
 
 def legitEquation(equation,equivalencies = None):
 	assert equation.coefficient != 0
