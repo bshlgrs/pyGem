@@ -59,6 +59,18 @@ def isEquivalent(a,b,equivalencies):
 			return b in group
 	return False
 
+def addEquivalence(newthing,equivalencies):
+	newgroup = list(newthing)
+	outlist = [list(x) for x in equivalencies]
+	for group in outlist:
+		if any(x in newgroup for x in group):
+			outlist.remove(group)
+			for x in group:
+				if x not in newgroup:
+					newgroup.append(x)
+	outlist.append(newgroup)
+	return outlist
+
 def findEqualVariable(variable,equivalencies,terms):
 	for term in terms:
 		if isEquivalent(term,variable,equivalencies):

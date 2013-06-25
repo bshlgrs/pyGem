@@ -7,6 +7,7 @@ line interface.
 
 I plan to use this version as a stepping stone for later versions.
 
+To run a script such as example.txt, run $ python commandLineInterface.py < example.txt
 
 ----Simple CLI example----
 
@@ -14,12 +15,12 @@ Here's a sample session with the CLI, solving the age old problem of how fast an
 object will hit the ground given the height at which it started falling.
 
 
-$ python commandLineInterface.py
+$ python commandLineInterface.py -l
 No equations
 
 No equivalencies
 
-No rewrites
+No expressions
 
 >> add equation KE = 0.5 m1 v^2
 
@@ -28,7 +29,7 @@ Equation 0:  KE = 0.5 m1 v^2
 
 No equivalencies
 
-No rewrites
+No expressions
 
 >> add equation PE = m2 g h
 
@@ -38,7 +39,7 @@ Equation 1:  PE = m2 g h
 
 No equivalencies
 
-No rewrites
+No expressions
 
 >> declare equal m1 m2
 
@@ -49,7 +50,7 @@ Equation 1:  PE = m2 g h
 Equivalencies:
 m1=m2
 
-No rewrites
+No expressions
 
 >> declare equal KE PE
 
@@ -61,9 +62,9 @@ Equivalencies:
 m1=m2
 KE=PE
 
-No rewrites
+No expressions
 
->> rewrite v
+>> write v
 
 Equations:
 Equation 0:  KE = 0.5 m1 v^2
@@ -73,7 +74,7 @@ Equivalencies:
 m1=m2
 KE=PE
 
-Rewrites:
+Expressions:
 v  =  0.707106781187 m1^(-1/2) KE^(1/2)
 
 >> restate v without KE using 1
@@ -86,5 +87,7 @@ Equivalencies:
 m1=m2
 KE=PE
 
-Rewrites:
+Expressions:
 v  =  0.707106781187 h^(1/2) g^(1/2)
+
+>> finish
