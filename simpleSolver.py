@@ -1,8 +1,7 @@
 from equation import Equation
+from units import Units
 
 _debug = True
-
-# We assume that each variable name is only in one place in all the formulas.
 
 
 def legitEquation(equation,equivalencies = None):

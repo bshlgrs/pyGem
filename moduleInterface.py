@@ -2,41 +2,58 @@
 
 from equation import Equation
 from simpleSolver import *
+from commandLineInterface import printState
+from units import Units, unitsOfEquation, checkDimensionless, parseUnitsList
 
-			elif instruction[:5]=="add e":
-				equations.append(ep.Equation(instruction[12:]))
-				displayEquations.append(instruction[12:].strip())
-			elif instruction[:5]=="rewri":
-				arg = instruction.split()[1]
-				rewrites[arg] = rewrite(arg,equations)
-			elif instruction[:5]=="decla":
-				equivalencies.append(instruction.split()[2:])
-			elif instruction[:5]=="resta":
-				args = instruction.split()
-				rewrites[args[1]] = ss.removeTerm(rewrites[args[1]],args[3],
-											equations[int(args[5])],equivalencies)
 
-def addEquation(equation):
-	equations.append(Equation(equation))
+def addEquation(equation,unitsString):
+
+	newEquation = Equation(equation)
+	newUnits = parseUnitsList(unitsStringmoad)
+
+	for variable in newEquation.terms:
+		if variable in units:
+			print "The variable %d is already used in another equation."
+			return
+
+	assert set(newEquation.terms) == set(newUnits)
+
+	for unit in newUnits:
+		units[unit] = newUnits[unit]
+
+	assert checkDimensionless(newEquation,units)
+
+	equations.append(newEquation)
 	displayEquations.append(equation)
+
+	showAll()
+	
+def declareEqual(inlist):
+
+	# Check that everything is dimensionally sensible
+	commonUnits = units[inlist[0]]
+	assert all(commonUnits.terms == units[a].terms for a in inlist)
+
+	addEquivalence(inlist,equivalencies)
+	showAll()
 
 def write(var):
 	a = rewrite(var,equations)
 	print var,"=", a
 	rewrites[var] = a
 
-def declareEqual(inlist):
-	addEquivalence(inlist,equivalencies)
-
 def rewrite(var,without,using):
 	expressions[var]=ss.removeTerm(var,without,equations[using],equivalencies)
 	print expressions[var]
 
+def showAll():
+	printState(equations,equivalencies,expressions)
+
 
 equations = []
-
 displayEquations = []
-
 equivalencies = []
 expressions = {}
+units = {}
+
 

@@ -1,5 +1,7 @@
 # equation.py
 
+from utilityFunctions import numberPrint
+
 class Equation():
     def __init__(self,instr=None):
         if instr:
@@ -54,13 +56,6 @@ def equationToString(equation,lhs=None):
         else:
             outlist.append("%s^%s"%(term,numberPrint(power)))
     return " ".join(outlist)
-
-def numberPrint(number):
-    if abs(int(number)-number) < 0.00001:
-        return "%d"%number
-    if abs(int(number*2)-number*2) < 0.00001:
-        return "(%d/2)"%(number*2)
-    return "%1f"%number
 
 if __name__ == '__main__':
     example = Equation("E_K = 0.5 m v^2")

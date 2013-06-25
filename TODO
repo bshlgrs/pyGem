@@ -1,13 +1,5 @@
 TODO
 
-Add a little bit of usability to the CLI -- maybe it could do something better than crashing if you mess up
-
-Enforce the restriction that a variable only appears in one formula
-
-Document the assumptions I'm making in simpleSolver.py
-
-Add dimensional analysis
-
 Look for easy ways to add more functionality to the solver -- addition would be nice.
 
 Add the ability to give numerical values to variables.
