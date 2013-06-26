@@ -6,6 +6,9 @@ class Equation():
     def __init__(self,instr=None):
         if instr:
             self.terms, self.coefficient = parseEquation(instr)
+        else:
+            self.terms = {}
+            self.coefficient = 1
     def __str__(self):
         return equationToString(self)
 
@@ -57,6 +60,17 @@ def equationToString(equation,lhs=None):
             outlist.append("%s^%s"%(term,numberPrint(power)))
     return " ".join(outlist)
 
+def substituteNumbersIntoExpression(expression,numbers):
+    out = Equation()
+    out.coefficient = expression.coefficient
+    for variable in expression.terms:
+        if variable in numbers:
+            out.coefficient *= numbers[variable]**expression.terms[variable]
+        else:
+            out.terms[variable] = expression.terms[variable]
+    return out
+
 if __name__ == '__main__':
-    example = Equation("E_K = 0.5 m v^2")
-    print example
+    example = Equation("KE = 0.5 m v^2")
+    assert example.terms == {"KE":1,"m":-1,"v":-2}
+    assert substituteNumbersIntoExpression(Equation("a b = 1"),{"a":3,"b":4}).coefficient == 12.0

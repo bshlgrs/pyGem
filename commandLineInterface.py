@@ -1,4 +1,6 @@
-# simpleInterface.py
+# commandLineInterface.py
+
+## This is obsolete -- I'm only improving moduleInterface at the moment
 
 import simpleSolver as ss
 import equation as ep

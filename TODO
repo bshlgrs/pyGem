@@ -1,5 +1,4 @@
 TODO
 
-Look for easy ways to add more functionality to the solver -- addition would be nice.
-
-Add the ability to give numerical values to variables.
+- Look at ways to solve a wider class of equations
+- Figure out how I'm going to GUI it.
