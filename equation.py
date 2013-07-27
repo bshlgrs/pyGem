@@ -73,4 +73,5 @@ def substituteNumbersIntoExpression(expression,numbers):
 if __name__ == '__main__':
     example = Equation("KE = 0.5 m v^2")
     assert example.terms == {"KE":1,"m":-1,"v":-2}
-    assert substituteNumbersIntoExpression(Equation("a b = 1"),{"a":3,"b":4}).coefficient == 12.0
+    assert substituteNumbersIntoExpression(Equation("a b = 1"),{"a":3,"b":4}).coefficient
+                                                == 12.0
