@@ -110,12 +110,28 @@ class Backend():
                     expr = expr.replace(var2,target)
                 self.expressions[var] = expr
 
-    def rotateVariableInExpression(self,expression,var):
-        raise NotImplementedError()
-        group = [x for x in self.equivalencies if var in x]
-        varToChangeTo = (group.index(var) + 1) % len(group)
+    def rotateVariableInExpression(self,varToChange,oldName):
+        """
+        Changes a variable in an expression to an equivalent one.
 
-        ## Replace var by varToChangeTo in expression
+        For example, if we have m and m2, this might change KE=m*v**2 to
+        KE=m2*v**2.
+
+        Args:
+            varToChange: This is the variable whose expression we want
+                to adjust, eg KE in the previous example.
+            oldName: This is the name of the variable whose name we want
+                to change, eg m in the previous example.
+        """
+
+        group = [x for x in self.equivalencies if oldName in x][0]
+        newName = group[(group.index(oldName) + 1) % len(group)]
+
+        varExpressions = self.expressions[varToChange]
+        self.expressions[varToChange] = []
+        for exp in varExpressions:
+            self.expressions[varToChange].append(
+                                        exp.replace(oldName,newName))
 
     def rewriteUsingExpression(self,equation,var,expr):
         raise NotImplementedError()
@@ -129,9 +145,8 @@ if __name__ == '__main__':
     a.addEquation(Equation("KE","0.5*m*v**2"),{})
     a.addEquivalency(["m","m2"])
 
-
     a.findExpression("v",a.equations[0])
 
-    print a.expressions
+    a.rotateVariableInExpression("v","m")
 
     a.show()
