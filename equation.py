@@ -1,77 +1,64 @@
-# equation.py
-
-from utilityFunctions import numberPrint
+import sympy as s
+from sympy.solvers import solve
 
 class Equation():
-    def __init__(self,instr=None):
-        if instr:
-            self.terms, self.coefficient = parseEquation(instr)
-        else:
-            self.terms = {}
-            self.coefficient = 1
-    def __str__(self):
-        return equationToString(self)
+    def __init__(self,lhs,rhs):
+        self.lhs = s.S(lhs)
+        self.rhs = s.S(rhs)
+        self.equation = self.lhs - self.rhs
 
+    def __repr__(self):
+        return (repr(self.lhs)+' = '+ repr(self.rhs))
 
-def parseEquation(instr):
-    lhs, rhs = instr.split("=")
-    lhs = [x.strip() for x in lhs.split()]
-    rhs = [x.strip() for x in rhs.split()]
+    def getVars(self):
+        lhs = []
+        rhs = []
+        func = s.Symbol("x").func
 
-    outdict = {}
+        for a in s.preorder_traversal(self.lhs):
+            if a.func == func:
+                lhs.append(a.name)
+        for a in s.preorder_traversal(self.rhs):
+            if a.func == func:
+                rhs.append(a.name)
+        return (lhs,rhs)
 
-    factor = 1
+    def rename(self,currentVarNumbers):
+        lhs, rhs = self.getVars()
 
-    for a in lhs:
-        try:
-            factor *= float(a)
-        except Exception:
-            if '^' not in a:
-                outdict[a]=1
+        for name in lhs:
+            if name in currentVarNumbers:
+                currentVarNumbers[name]+=1
+                self.lhs = self.lhs.replace(name,
+                                name+str(currentVarNumbers[name]))
             else:
-                base,exp = a.split("^")
-                outdict[base]=float(exp)
+                currentVarNumbers[name]=1
 
-    for a in rhs:
-        try:
-            factor /= float(a)
-        except Exception:
-            if '^' not in a:
-                outdict[a]=-1
+        for name in rhs:
+            if name in currentVarNumbers:
+                currentVarNumbers[name]+=1
+                self.rhs = self.rhs.replace(name,
+                                name+str(currentVarNumbers[name]))
             else:
-                base,exp = a.split("^")
-                outdict[base]=-float(exp)
+                currentVarNumbers[name]=1
+        self.equation = self.lhs - self.rhs
 
-    return (outdict,factor)
-
-def equationToString(equation,lhs=None):
-    if lhs:
-        outlist = [lhs,"="]
-    else:
-        outlist = []
-
-    if str(equation.coefficient)!= "1":
-        outlist.append(str(equation.coefficient))
-    for term in equation.terms:
-        power= equation.terms[term]
-        if power==1:
-            outlist.append(term)
+    def solve(self,variable):
+        if variable in self.getVars()[0]+self.getVars()[1]:
+            return solve(self.equation,variable)
         else:
-            outlist.append("%s^%s"%(term,numberPrint(power)))
-    return " ".join(outlist)
-
-def substituteNumbersIntoExpression(expression,numbers):
-    out = Equation()
-    out.coefficient = expression.coefficient
-    for variable in expression.terms:
-        if variable in numbers:
-            out.coefficient *= numbers[variable]**expression.terms[variable]
-        else:
-            out.terms[variable] = expression.terms[variable]
-    return out
+            return None
 
 if __name__ == '__main__':
-    example = Equation("KE = 0.5 m v^2")
-    assert example.terms == {"KE":1,"m":-1,"v":-2}
-    assert substituteNumbersIntoExpression(Equation("a b = 1"),{"a":3,"b":4}).coefficient
-                                                == 12.0
+    a = Equation("KE","0.5*m*v**2")
+
+    print a
+
+    currentVarNumbers = {"m":1}
+
+    a.rename(currentVarNumbers)
+
+    print a, currentVarNumbers
+
+    s.pprint(a.solve("v"))
+
