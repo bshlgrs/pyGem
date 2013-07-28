@@ -2,6 +2,15 @@ import sympy as s
 from sympy.solvers import solve
 
 class Equation():
+    """
+    The representation of an equation.
+
+    Attributes:
+        lhs, rhs: Sympy expressions being the left and right hand sides
+        of the function. These are seperate for display purposes.
+        equation: lhs-rhs. The actual equation, used for actual things.
+
+    """
     def __init__(self,lhs,rhs):
         self.lhs = s.S(lhs)
         self.rhs = s.S(rhs)
@@ -11,10 +20,11 @@ class Equation():
         return (repr(self.lhs)+' = '+ repr(self.rhs))
 
     def getVars(self):
-        return self.equation.atoms(s.Symbol)
+        return [x.name for x in self.equation.atoms(s.Symbol)]
 
     def getVars2(self):
-        return (self.lhs.atoms(s.Symbol),self.rhs.atoms(s.Symbol))
+        return ([x.name for x in self.lhs.atoms(s.Symbol)],
+                  [x.name for x in self.rhs.atoms(s.Symbol)])
 
     def rename(self,currentVarNumbers):
         lhs, rhs = self.getVars2()
@@ -38,7 +48,7 @@ class Equation():
 
     def solve(self,variable):
         if variable in self.getVars():
-            return solve(self.equation,variable)
+            return solve(self.equation,s.S(variable))
         else:
             return None
 
