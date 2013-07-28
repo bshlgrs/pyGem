@@ -63,12 +63,26 @@ class Backend():
 
     def findExpression(self,var,equation):
         if var in equation.getVars():
-            exp = equation.solve[var]
+            exp = equation.equation.solve(var)
             if exp:
                 self.expressions[var] = exp
             else:
                 raise Exception("No solution found")
         raise Exception("Variable not in expression")
+
+    def updateExpressionsWithEquivalency(self):
+        newEquivalency = self.equivalencies[-1]
+
+        for var in self.expressions:
+            expr = self.expressions[var]
+
+            similarList = [x if x in expr.getVars() for x in newEquivalency]
+
+            if len(similarList) > 1:
+                target = similarList[0]
+                for var2 in similarList[1:]:
+                    expr = expr.replace(var2,target)
+                self.expressions[var] = expr
 
     def rewriteUsingExpression(self,equation,var,expr):
         raise NotImplementedError()

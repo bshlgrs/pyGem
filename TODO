@@ -1,4 +1,7 @@
 TODO
 
-- Look at ways to solve a wider class of equations
-- Figure out how I'm going to GUI it.
+- Add a plus/minus representation thing
+- Write rewriteUsingExpression, rewriteUsingEquation
+- Write an equation renderer
+
+- GUI shit up

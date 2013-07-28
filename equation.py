@@ -11,20 +11,13 @@ class Equation():
         return (repr(self.lhs)+' = '+ repr(self.rhs))
 
     def getVars(self):
-        lhs = []
-        rhs = []
-        func = s.Symbol("x").func
+        return self.equation.atoms(s.Symbol)
 
-        for a in s.preorder_traversal(self.lhs):
-            if a.func == func:
-                lhs.append(a.name)
-        for a in s.preorder_traversal(self.rhs):
-            if a.func == func:
-                rhs.append(a.name)
-        return (lhs,rhs)
+    def getVars2(self):
+        return (self.lhs.atoms(s.Symbol),self.rhs.atoms(s.Symbol))
 
     def rename(self,currentVarNumbers):
-        lhs, rhs = self.getVars()
+        lhs, rhs = self.getVars2()
 
         for name in lhs:
             if name in currentVarNumbers:
@@ -44,7 +37,7 @@ class Equation():
         self.equation = self.lhs - self.rhs
 
     def solve(self,variable):
-        if variable in self.getVars()[0]+self.getVars()[1]:
+        if variable in self.getVars():
             return solve(self.equation,variable)
         else:
             return None
