@@ -1,6 +1,6 @@
-Timport Tkinter as tk
+import Tkinter as tk
 from Tkinter import W, E, N, S
-from ttk import Button 
+from ttk import Button
 
 class SampleApp(tk.Tk):
     '''Illustrate how to drag items on a Tkinter canvas'''
@@ -15,7 +15,7 @@ class SampleApp(tk.Tk):
         self.otherCanvas = tk.Canvas(width=200,height=300,bg = "#eee")
         self.otherCanvas.grid(row=1,column=2,sticky=W+E+N+S)
 
-        # this data is used to keep track of an 
+        # this data is used to keep track of an
         # item being dragged
         self._drag_data = {"x": 0, "y": 0, "item": None}
 
@@ -50,7 +50,7 @@ class SampleApp(tk.Tk):
     def _create_token(self, coord, color):
         '''Create a token at the given coordinate in the given color'''
         (x,y) = coord
-        self.canvas.create_oval(x-25, y-25, x+25, y+25, 
+        self.canvas.create_oval(x-25, y-25, x+25, y+25,
                                 outline=color, fill=color, tags="token")
 
     def OnTokenButtonPress(self, event):

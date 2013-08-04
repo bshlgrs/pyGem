@@ -29,6 +29,9 @@ class Backend():
         used when equations need to have variable names changed to not
         conflict with existing variables.
 
+        self.numericalValues is a dictionary from variable names to
+        their numerical values.
+
         """
 
     def __init__(self):
@@ -37,6 +40,7 @@ class Backend():
         self.dimensions = {}
         self.expressions = {}
         self.varNumbers = {}
+        self.numericalValues = {}
 
     def show(self):
         """Prints a simple string representation of the object."""
@@ -56,7 +60,20 @@ class Backend():
         for x in self.expressions:
             print x," = ",self.expressions[x]
 
+        print "\nNumerical values:"
+        for x in self.numericalValues:
+            print x," = ",self.numericalValues[x]
+
     def addEquation(self,equation,newUnits):
+        """
+        This adds equation to the current list of equations, and updates
+        the units dict with the units of equation.
+
+        Args:
+            Equation: An Equation object
+            newUnits: A dictionary from strings to Dimensions objects
+
+        """
         equation.rename(self.varNumbers)
         self.equations.append(equation)
 
@@ -64,12 +81,34 @@ class Backend():
             self.dimensions[var] = newUnits[var]
 
     def findEquationWithVar(self,var):
+        """
+        Finds an equation with the variable var in it.
+
+        Args:
+            var: A string corresponding to the variable we're looking
+            for.
+
+        Raises:
+            If the var is not in any equation, an exception is raised.
+        """
         for equation in self.equations:
             if var in equation.getVars():
                 return equation
         raise Exception("Var not found in any equation")
 
     def addEquivalency(self,newEquivalencies):
+        """
+        Takes a list of variables and tells the backend that they are
+        all equal to each other.
+
+        Equality is transitive, so if for example we know a=b and c=d,
+        telling it that b=c makes it infer a=b=c=d.
+
+        Args:
+            newEquivalencies: A list of strings corresponding to
+            variables.
+        """
+
         newgroup = list(newEquivalencies)
         outlist = [list(x) for x in self.equivalencies] # this is a deep copy
         for group in outlist:
@@ -81,14 +120,21 @@ class Backend():
         outlist.append(newgroup)
         self.equivalencies = outlist
         self.checkUnits()
+        self.updateExpressionsWithEquivalencies()
 
     def varsEqual(self,var1,var2):
+        """
+        Checks if var1 is known to be equal to var2.
+        """
         for group in self.equivalencies:
             if var1 in group:
                 return var2 in group
         return False
 
     def equivalenciesOfVariable(self,var):
+        """
+        Gives a list of variables known to be equal to var, not
+        including var itself."""
         for group in self.equivalencies:
             if var in group:
                 out = list(group)
@@ -96,17 +142,30 @@ class Backend():
                 return out
         return []
 
+    # Super dodgy!!!
     def checkUnits(self):
-        print "We're being dodgy and not checking.dimensions!"
+        print ("We're being dodgy and not checking dimensions"
+               " because it's nice for testing purposes not to have to"
+               " enter them.")
         return
         for group in self.equivalencies:
             if len(group)>1: # I'm pretty sure this should always be true
-                firstThing = group[0]
                 for thing in group[1:]:
                     assert (self.dimensions[firstThing] ==
                                                  self.dimensions[thing])
 
     def findExpression(self,var,equation):
+        """
+        Finds expressions for var and adds them to the dict of
+        expressions.
+
+        Args:
+            var: Variable to solve for.
+            equation: Equation to solve for var.
+
+        Returns nothing.
+        """
+
         if var in equation.getVars():
             exps = equation.solve(var)
             if exps:
@@ -117,20 +176,18 @@ class Backend():
         raise Exception("Variable not in expression")
 
 
-    # Not tested
-    def updateExpressionsWithEquivalency(self):
+    def updateExpressionsWithEquivalencies(self):
+        """
+        Updates all expressions to deal with the current known
+        equivalencies. For example, if a=g*m1/m2, and we suddenly
+        learn that m1=m2, it will simplify the expression to a=g.
+        """
+
         newEquivalency = self.equivalencies[-1]
 
         for var in self.expressions:
-            expr = self.expressions[var]
-
-            similarList = [x for expr in newEquivalency if x in expr.getVars()]
-
-            if len(similarList) > 1:
-                target = similarList[0]
-                for var2 in similarList[1:]:
-                    expr = expr.replace(var2,target)
-                self.expressions[var] = expr
+            self.expressions[var] = [unifyVarsInExpression(x) for
+                                    x in self.expressions[var]]
 
     def rotateVariableInExpression(self,varToChange,oldName):
         """
@@ -203,7 +260,22 @@ class Backend():
         exp.simplify()
         return exp
 
+    def addNumericalValue(self,variable,value):
+        others = self.equivalenciesOfVariable(variable)
+        for other in others:
+            if other in self.numericalValues:
+                raise Exception("Inconsistent numerical value added")
 
+        self.numericalValues[variable] = value
+
+    def getNumericalValue(self,variable):
+        if variable in self.numericalValues:
+            return self.numericalValues[variable]
+
+        others = self.equivalenciesOfVariable(variable)
+        for other in others:
+            if other in self.numericalValues:
+                return self.numericalValues[other]
 
 if __name__ == '__main__':
     a = Backend()
