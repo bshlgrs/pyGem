@@ -1,0 +1,5 @@
+# Equations
+
+KE = 0.5 * m * v**2, KE :: J, m :: kg, v :: m**-1
+PE = m * g * h, PE :: J, m :: kg, g :: m s**-1, h :: m
+F = m * a, F :: N, m :: kg, a :: m s**-1

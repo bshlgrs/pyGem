@@ -11,13 +11,14 @@ class SampleApp(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         # create a canvas
-        self.canvas = tk.Canvas(width=400, height=400, bg = "grey")
-        self.canvas.grid(row=0,column=0,rowspan=2,columnspan=2,sticky=W+E+N+S)
+        self.whiteboard = tk.Canvas(width=400, height=400, bg = "grey")
+        self.whiteboard.grid(row=0,column=0,rowspan=2,columnspan=2,
+                    sticky=W+E+N+S)
 
-        self.otherCanvas = tk.Canvas(width=200,height=300,bg = "#eee")
-        self.otherCanvas.grid(row=1,column=2,sticky=W+E+N+S)
+        self.searchSection = tk.Canvas(width=200,height=300,bg = "#eee")
+        self.searchSection.grid(row=1,column=2,sticky=W+E+N+S)
 
-        # this data is used to keep track of an 
+        # this data is used to keep track of an
         # item being dragged
         self._drag_data = {"x": 0, "y": 0, "item": None}
 
@@ -50,7 +51,7 @@ class SampleApp(tk.Tk):
         self.grid_columnconfigure(1,weight=3)
         self.grid_columnconfigure(2,weight=1)
         self.grid_rowconfigure(1,weight=1)
-    
+
     def addDraggableThing(self,blah):
         self._create_token((100,100), self.newColor.get())
 
@@ -65,7 +66,7 @@ class SampleApp(tk.Tk):
         '''Create a token at the given coordinate with the given text'''
         (x,y) = coord
 
-        myid = self.canvas.create_text((x,y), 
+        myid = self.canvas.create_text((x,y),
                 text=sympy.pretty(sympy.S(text)), tags="token", font=("Courier",30))
 
         for obj in self._objects:

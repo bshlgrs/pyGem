@@ -1,5 +1,6 @@
 import sympy as s
 from sympy.solvers import solve
+import re
 
 class Equation():
     """
@@ -12,12 +13,11 @@ class Equation():
 
     """
     def __init__(self,lhs,rhs):
-        self.lhs = s.S(lhs)
-        self.rhs = s.S(rhs)
-        self.equation = self.lhs - self.rhs
+        self.equation = s.S(lhs) - s.S(rhs)
+        self.text = lhs + " = " + rhs
 
     def __repr__(self):
-        return (repr(self.lhs)+' = '+ repr(self.rhs))
+        return self.text
 
     def getVars(self):
         return [x.name for x in self.equation.atoms(s.Symbol)]
@@ -27,24 +27,27 @@ class Equation():
                   [x.name for x in self.rhs.atoms(s.Symbol)])
 
     def rename(self,currentVarNumbers):
-        lhs, rhs = self.getVars2()
 
-        for name in lhs:
+        def replaceString(string,old,new):
+            def change(match):
+                thing = match.group(0)
+                if thing==old:
+                    return new
+                return thing
+            a= re.compile("[a-zA-Z]+")
+            return a.sub(change,string)
+
+        myVars = self.getVars()
+
+        for name in myVars:
             if name in currentVarNumbers:
                 currentVarNumbers[name]+=1
-                self.lhs = self.lhs.replace(name,
+                self.equation = self.equation.subs(name,
+                                name+str(currentVarNumbers[name]))
+                self.text = replaceString(self.text,name,
                                 name+str(currentVarNumbers[name]))
             else:
                 currentVarNumbers[name]=1
-
-        for name in rhs:
-            if name in currentVarNumbers:
-                currentVarNumbers[name]+=1
-                self.rhs = self.rhs.replace(name,
-                                name+str(currentVarNumbers[name]))
-            else:
-                currentVarNumbers[name]=1
-        self.equation = self.lhs - self.rhs
 
     def solve(self,variable):
         if variable in self.getVars():

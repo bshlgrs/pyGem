@@ -2,11 +2,12 @@
 
 from Dimensions import Dimensions
 from Equation import Equation
-from sympy import pretty
+from sympy import pretty, S
+from utilityFunctions import replaceName
 from sympy.solvers import solve
 from sympy import Symbol
 
-class Backend():
+class Backend(object):
     """The backend for my graphical equation manipulator.
 
     This stores all the actual information about the equations and such
@@ -44,25 +45,30 @@ class Backend():
 
     def show(self):
         """Prints a simple string representation of the object."""
-        print "Equations:"
-        for x in self.equations:
-            print x
+        if self.equations:
+            print "Equations:"
+            for x in self.equations:
+                print x
 
-        print "\nEquivalencies:"
-        for x in self.equivalencies:
-            print "=".join(x)
+        if self.equivalencies:
+            print "\nEquivalencies:"
+            for x in self.equivalencies:
+                print "=".join(x)
 
-        print "\nDimensions:"
-        for x in self.dimensions:
-            print x,"::".dimensions[x].show()
+        if self.dimensions:
+            print "\nDimensions:"
+            for x in self.dimensions:
+                print x,"::".dimensions[x].show()
 
-        print "\nExpressions:"
-        for x in self.expressions:
-            print x," = ",self.expressions[x]
+        if self.expressions:
+            print "\nExpressions:"
+            for x in self.expressions:
+                print x," = ",self.expressions[x]
 
-        print "\nNumerical values:"
-        for x in self.numericalValues:
-            print x," = ",self.numericalValues[x]
+        if self.numericalValues:
+            print "\nNumerical values:"
+            for x in self.numericalValues:
+                print x," = ",self.numericalValues[x]
 
     def addEquation(self,equation,newUnits):
         """
@@ -210,7 +216,7 @@ class Backend():
         self.expressions[varToChange] = []
         for exp in varExpressions:
             self.expressions[varToChange].append(
-                                        exp.replace(oldName,newName))
+                                        replaceName(exp,oldName,newName))
 
     def rewriteUsingExpression(self,var,varToRemove,varWhoseExpToUse):
         """
@@ -224,7 +230,7 @@ class Backend():
 
         for exp in self.expressions[var]:
             for exp2 in self.expressions[varWhoseExpToUse]:
-                newExpList.append(exp.replace(varToRemove,exp2))
+                newExpList.append(exp.subs(varToRemove,exp2))
 
         self.expressions[var] = newExpList
 
@@ -238,7 +244,7 @@ class Backend():
 
         equat = equation.equation
         for var2 in self.equivalenciesOfVariable(varToRemove):
-            equat = equat.replace(var2,varToRemove)
+            equat = equat.subs(var2,varToRemove)
 
         exps = solve(equat,varToRemove)
 
@@ -246,7 +252,7 @@ class Backend():
 
         for exp1 in self.expressions[var]:
             for exp2 in exps:
-                outexps.append(exp1.replace(varToRemove,exp2))
+                outexps.append(exp1.subs(varToRemove,exp2))
 
 
         self.expressions[var] = [self.unifyVarsInExpression(x)
@@ -256,7 +262,7 @@ class Backend():
         varNameList = [x.name for x in exp.atoms(Symbol)]
         for var in varNameList:
             for var2 in self.equivalenciesOfVariable(var):
-                exp = exp.replace(var2,var)
+                exp = exp.subs(var2,var)
         exp.simplify()
         return exp
 
@@ -277,10 +283,35 @@ class Backend():
             if other in self.numericalValues:
                 return self.numericalValues[other]
 
+        return None
+
+    def getNumericalExpressions(self,variable):
+
+        assert variable in self.expressions
+
+        exps = self.expressions[variable]
+        outexps = []
+
+        for exp in exps:
+            for var2 in [x.name for x in exp.atoms(Symbol)]:
+                newVal = self.getNumericalValue(var2)
+                if newVal is not None:
+                    exp = exp.subs(var2,newVal)
+            outexps.append(exp)
+
+
+        return outexps
+
+
 if __name__ == '__main__':
     a = Backend()
     a.addEquation(Equation("KE","0.5*m*v**2"),{})
     a.addEquation(Equation("PE","m*g*h"),{})
+
+    a.addEquation(Equation("PE","m*g*h"),{})
+
+
+
     a.addEquivalency(["m","m2"])
     a.addEquivalency(["KE","PE"])
 
@@ -288,6 +319,12 @@ if __name__ == '__main__':
 
     a.show()
 
+    print
+
     a.rewriteUsingEquation("v","KE",a.equations[1])
 
+    a.addNumericalValue("g",9.8)
+
     a.show()
+
+    print a.getNumericalExpressions("v")
