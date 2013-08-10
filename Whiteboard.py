@@ -16,8 +16,6 @@ class Whiteboard(tk.Canvas, Backend):
         self.tag_bind("Draggable","<B1-Motion>",self.handleMotion)
       #  self.tag_bind("Draggable","<ButtonPress-2>",self.onRightClickPress)
 
-        self.bind("<Shift-Up>",self.increaseTextSize)
-
         self.textSize = 26
 
         self.equivalenceLines = []
@@ -35,6 +33,7 @@ class Whiteboard(tk.Canvas, Backend):
         self.addGUIEquivalence("EP","EK")
 
         self.currentDragLine = None
+
 
 
     def allTextThings(self):

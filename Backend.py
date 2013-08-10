@@ -162,12 +162,8 @@ class Backend(object):
                 return out
         return []
 
-    # Super dodgy!!!
+
     def checkUnits(self):
-        # print ("We're being dodgy and not checking dimensions"
-        #        " because it's nice for testing purposes not to have to"
-        #        " enter them.")
-        # return
         for group in self.equivalencies:
             if len(group)>1: # I'm pretty sure this should always be true
                 for thing in group[1:]:

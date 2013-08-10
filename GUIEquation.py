@@ -4,8 +4,6 @@ from Equation import Equation
 import random
 import re
 
-def stringify(num):
-    return "".join(chr(ord(x)+17) for x in str(num))
 
 class GUIEquation(Equation):
     def __init__(self,lhs,rhs,root):
@@ -23,7 +21,7 @@ class GUIEquation(Equation):
         self.varsTextID = None
         self.opsTextID = None
 
-        self.tagString = stringify(id(self))
+        self.tagString = "".join(chr(ord(x)+17) for x in str(id(self)))
 
         self.varsString, self.opsString = self.splitStrings()
 
