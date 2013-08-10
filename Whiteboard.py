@@ -14,13 +14,13 @@ class Whiteboard(tk.Canvas, Backend):
                                 "<ButtonRelease-1>",self.onClickRelease)
         self.tag_bind("Draggable","<B1-Motion>",self.handleMotion)
 
-        self.textSize = 22
+        self.bind("<Shift-Up>",self.increaseTextSize)
 
-        self.addGUIEquation("EK","m*v**2",{})
+        self.textSize = 26
+
+        self.addGUIEquation("EK","0.5*m*v**2",{})
         self.addGUIEquation("EP","m*g*h",{})
         self.addGUIEquation("f","m*a",{})
-
-        print self.equations
 
     def allTextThings(self):
         return self.equations

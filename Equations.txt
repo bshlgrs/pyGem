@@ -1,5 +1,5 @@
-# Equations
-
-KE = 0.5 * m * v**2, KE :: J, m :: kg, v :: m**-1
-PE = m * g * h, PE :: J, m :: kg, g :: m s**-1, h :: m
-F = m * a, F :: N, m :: kg, a :: m s**-1
+EK=0.5*m*v**2; EK :: J, m :: kg, v:: m*s^-1; kinetic energy mass velocity.
+EP = m*g*h; EP :: J, m :: kg, g :: kg * m^-2, h :: m,
+        potential energy gravity mass acceleration.
+f=m*a; f :: N, m :: kg, a :: m*s^-2; force mass acceleration.
+v=d/t; v :: m*s^-1; d :: m; t :: s; velocity distance time.

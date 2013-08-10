@@ -11,7 +11,7 @@ class Frontend(tk.Tk):
         tk.Tk.__init__(self)
         self.wm_title("Graphical equation manipulator")
 
-        self.whiteboard = Whiteboard(self,width=400, height=400, bg = "grey",
+        self.whiteboard = Whiteboard(self,width=400, height=400, bg = "white",
                             bd=1, relief='raised')
         self.whiteboard.grid(row=0,column=0,rowspan=5,columnspan=1,sticky=W+E+N+S)
 
@@ -23,7 +23,6 @@ class Frontend(tk.Tk):
         searchBarWidget.grid(row=1,column=1)
 
         searchBarWidget.bind("<Key>",key)
-
 
         self.searchSpace = tk.Canvas(width=200,height=300,bg = "#eee",
                     bd=1, relief='raised')
@@ -45,8 +44,6 @@ class Frontend(tk.Tk):
         self.grid_rowconfigure(3,weight=0)
         self.grid_rowconfigure(4,weight=1)
 
-
-
         menubar = tk.Menu(self)
         self.config(menu=menubar)
 
@@ -60,7 +57,6 @@ class Frontend(tk.Tk):
         viewMenu.add_command(label="Text smaller",
                     command=self.whiteboard.decreaseTextSize)
         menubar.add_cascade(label="View", menu=viewMenu)
-
 
 def key(event):
     print "lol", event.char

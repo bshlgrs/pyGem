@@ -14,7 +14,7 @@ class Equation():
     """
     def __init__(self,lhs,rhs):
         self.equation = s.S(lhs) - s.S(rhs)
-        self.text = lhs + " = " + rhs
+        self.text = lhs + "=" + rhs
 
     def __repr__(self):
         return self.text
@@ -34,7 +34,7 @@ class Equation():
                 if thing==old:
                     return new
                 return thing
-            a= re.compile("[a-zA-Z]+")
+            a= re.compile("\w*[a-zA-Z]\w*")
             return a.sub(change,string)
 
         myVars = self.getVars()
@@ -55,6 +55,7 @@ class Equation():
         else:
             return None
 
+
 if __name__ == '__main__':
     a = Equation("KE","0.5*m*v**2")
 
@@ -67,4 +68,6 @@ if __name__ == '__main__':
     print a, currentVarNumbers
 
     s.pprint(a.solve("v"))
+
+
 
