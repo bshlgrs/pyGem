@@ -13,8 +13,8 @@ class GUIEquation(Equation):
 
         self.root = root
 
-        self.x = 200+random.random()*100
-        self.y = 200+random.random()*100
+        self.x = 200
+        self.y = 200+70*self.getMyEqNo()
 
         self.dragX = 0
         self.dragY = 0
@@ -31,21 +31,30 @@ class GUIEquation(Equation):
 
 
     def __del__(self):
+        self.root.removeEquation(self)
         if self.varsTextID:
             self.root.delete(self.varsTextID)
             self.root.delete(self.opsTextID)
+        self.root.updateEquivalencyLines()
+
+    def getMyEqNo(self):
+        try:
+            return self.root.equations.index(self)
+        except Exception:
+            return len(self.root.equations)
 
     def draw(self):
+        self.varsString, self.opsString = self.splitStrings()
         if self.varsTextID is not None:
             self.root.delete(self.varsTextID)
             self.root.delete(self.opsTextID)
         self.varsTextID = self.root.create_text((self.x,self.y),
             text =self.varsString,
-                 fill = "brown",
+                 fill = "#066",
                     font = ("Courier", self.root.textSize, "bold"))
         self.opsTextID = self.root.create_text((self.x,self.y),
             text =self.opsString, tags = ("Draggable", self.tagString),
-                    font = ("Courier", self.root.textSize, "bold"))
+                    font = ("Courier", self.root.textSize, "normal"))
 
 
     def onClickPress(self,event):
@@ -54,14 +63,22 @@ class GUIEquation(Equation):
             size = float((a[2]-a[0]))/len(self.text)
             textPos = int((event.x-a[0])/size)
 
-            if self.getThingAtTextPosition(textPos)[0] == "Thing":
+            clickedThing = self.getThingAtTextPosition(textPos)
+            if clickedThing[0] == "Thing":
                 self.dragX = event.x
                 self.dragY = event.y
                 self.beingDragged = True
-             #   print (self.dragX-self.x) / self.root.textSize * 1.4
+            else:
+                box = self.root.root.infoBox
+                box.delete('1.0','end')
+                box.insert('1.0',"%s :: "%clickedThing[1])
+                box.insert('end',self.root.dimensions[clickedThing[1]])
+
 
     def onClickRelease(self,event):
         self.beingDragged = False
+        if self.y<0:
+            self.__del__()
 
     def handleMotion(self,event):
         if self.beingDragged:
@@ -71,8 +88,16 @@ class GUIEquation(Equation):
             self.root.move(self.opsTextID, delta_x, delta_y)
             self.dragX = event.x
             self.dragY = event.y
-            self.x+= delta_x
-            self.y+= delta_y
+            self.x += delta_x
+            self.y += delta_y
+            self.root.updateEquivalencyLines()
+
+    def onRightClickPress(self,event):
+        if (self.root.find_closest(event.x, event.y)[0]
+                                    == self.opsTextID):
+
+            self.__del__()
+
 
     def getThingAtTextPosition(self,position):
         inlist = re.finditer("\w*[a-zA-Z]\w*",self.text)
@@ -93,12 +118,18 @@ class GUIEquation(Equation):
                 string2.append(self.text[a])
         return ("".join(string1),"".join(string2))
 
-    def getTextPositionsOfVar(self,var):
+    def getTextPositionOfVar(self,var):
         inlist = re.finditer("\w*[a-zA-Z]\w*",self.text)
-        return [x.span() for x in inlist if x.group()==var]
+        return [x.span() for x in inlist if x.group()==var][0]
 
-    def getAveragePositionsOfVar(self,var):
-        return [float(x+y)/2 for (x,y) in self.getPositionsOfVar(var)]
+    def getAveragePositionOfVar(self,var):
+        (x,y) = self.getTextPositionOfVar(var)
+        return float(x+y)/2.0
+
+    def getActualCanvasPositionOfVar(self,var):
+        bBox = self.root.bbox(self.tagString)
+        return ((bBox[2]-bBox[0])*self.getAveragePositionOfVar(var)
+                    /len(self.text) + bBox[0],(bBox[1]+bBox[3])/2.0)
 
 
 def main():

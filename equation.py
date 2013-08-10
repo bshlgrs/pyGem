@@ -26,7 +26,7 @@ class Equation():
         return ([x.name for x in self.lhs.atoms(s.Symbol)],
                   [x.name for x in self.rhs.atoms(s.Symbol)])
 
-    def rename(self,currentVarNumbers):
+    def rename(self,currentVarNumbers,newUnits):
 
         def replaceString(string,old,new):
             def change(match):
@@ -39,15 +39,20 @@ class Equation():
 
         myVars = self.getVars()
 
+        renamedUnits = {}
+
         for name in myVars:
             if name in currentVarNumbers:
                 currentVarNumbers[name]+=1
-                self.equation = self.equation.subs(name,
-                                name+str(currentVarNumbers[name]))
-                self.text = replaceString(self.text,name,
-                                name+str(currentVarNumbers[name]))
+                newName = name+str(currentVarNumbers[name])
+                self.equation = self.equation.subs(name, newName)
+                self.text = replaceString(self.text,name,newName)
+                renamedUnits[newName] = newUnits[name]
             else:
                 currentVarNumbers[name]=1
+                renamedUnits[name] = newUnits[name]
+
+        return renamedUnits
 
     def solve(self,variable):
         if variable in self.getVars():

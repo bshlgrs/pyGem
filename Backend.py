@@ -58,7 +58,7 @@ class Backend(object):
         if self.dimensions:
             print "\nDimensions:"
             for x in self.dimensions:
-                print x,"::".dimensions[x].show()
+                print x,"::",self.dimensions[x]
 
         if self.expressions:
             print "\nExpressions:"
@@ -80,11 +80,25 @@ class Backend(object):
             newUnits: A dictionary from strings to Dimensions objects
 
         """
-        equation.rename(self.varNumbers)
+        renamedUnits = equation.rename(self.varNumbers,newUnits)
         self.equations.append(equation)
 
-        for var in newUnits:
-            self.dimensions[var] = newUnits[var]
+        for var in renamedUnits:
+            self.dimensions[var] = renamedUnits[var]
+
+    # Needs testing
+    def removeEquation(self,equation):
+        if equation in self.equations:
+            self.equations.remove(equation)
+
+            for var in equation.getVars():
+                for partition in self.equivalencies:
+                    if var in partition:
+                        partition.remove(var)
+
+            for partition in self.equivalencies:
+                if len(partition)==1:
+                    self.equivalencies.remove(partition)
 
     def findEquationWithVar(self,var):
         """
@@ -150,14 +164,14 @@ class Backend(object):
 
     # Super dodgy!!!
     def checkUnits(self):
-        print ("We're being dodgy and not checking dimensions"
-               " because it's nice for testing purposes not to have to"
-               " enter them.")
-        return
+        # print ("We're being dodgy and not checking dimensions"
+        #        " because it's nice for testing purposes not to have to"
+        #        " enter them.")
+        # return
         for group in self.equivalencies:
             if len(group)>1: # I'm pretty sure this should always be true
                 for thing in group[1:]:
-                    assert (self.dimensions[firstThing] ==
+                    assert (self.dimensions[group[0]] ==
                                                  self.dimensions[thing])
 
     def findExpression(self,var,equation):
@@ -305,15 +319,16 @@ class Backend(object):
 
 if __name__ == '__main__':
     a = Backend()
-    a.addEquation(Equation("KE","0.5*m*v**2"),{})
-    a.addEquation(Equation("PE","m*g*h"),{})
+    a.addEquation(Equation("EK","0.5*m*v**2"),{"EK":"J","m":"kg",
+                                          "v":"m*s^-1"})
+    a.addEquation(Equation("EP","m*g*h"),{"EP":"J","m":"kg",
+                                        "g":"m*s^-2", "h":"m"})
 
-    a.addEquation(Equation("PE","m*g*h"),{})
-
-
+    a.addEquation(Equation("EP","m*g*h"),{"EP":"J","m":"kg",
+                                        "g":"m*s^-2", "h":"m"})
 
     a.addEquivalency(["m","m2"])
-    a.addEquivalency(["KE","PE"])
+    a.addEquivalency(["EK","EP"])
 
     a.findExpression("v",a.equations[0])
 
@@ -321,7 +336,7 @@ if __name__ == '__main__':
 
     print
 
-    a.rewriteUsingEquation("v","KE",a.equations[1])
+    a.rewriteUsingEquation("v","EK",a.equations[1])
 
     a.addNumericalValue("g",9.8)
 

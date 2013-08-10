@@ -11,9 +11,10 @@ class Frontend(tk.Tk):
         tk.Tk.__init__(self)
         self.wm_title("Graphical equation manipulator")
 
-        self.whiteboard = Whiteboard(self,width=400, height=400, bg = "white",
+        self.whiteboard = Whiteboard(self,width=600, height=600, bg = "white",
                             bd=1, relief='raised')
-        self.whiteboard.grid(row=0,column=0,rowspan=5,columnspan=1,sticky=W+E+N+S)
+        self.whiteboard.grid(row=0,column=0,rowspan=5,columnspan=1,
+                                sticky=W+E+N+S)
 
         self.searchLabel = tk.Label(self,text="Search for equations:")
         self.searchLabel.grid(row=0,column=1)
@@ -31,9 +32,9 @@ class Frontend(tk.Tk):
         self.infoLabel = tk.Label(self,text="Info:")
         self.infoLabel.grid(row=3,column=1)
 
-        self.infoTextVar = tk.StringVar()
         self.infoBox = tk.Text(self,width=5,height=5,bd=1,
-                            relief = 'raised',bg = "#eee")
+                relief = 'raised',bg = "#eee",
+                        font = ("Courier", 20, "normal"))
         self.infoBox.grid(row=4,column=1, sticky=W+E+N+S)
 
         self.grid_columnconfigure(0,weight=3)
