@@ -2,6 +2,7 @@
 import Tkinter as tk
 from Backend import Backend
 from Whiteboard import Whiteboard
+from SearchSpace import SearchSpace
 
 from Tkinter import N, E, W, S
 from ttk import Button
@@ -19,13 +20,11 @@ class Frontend(tk.Tk):
         self.searchLabel = tk.Label(self,text="Search for equations:")
         self.searchLabel.grid(row=0,column=1)
 
-        searchTextVar = tk.StringVar()
-        searchBarWidget = tk.Entry(self,textvariable = searchTextVar)
-        searchBarWidget.grid(row=1,column=1)
+        self.searchTextVar = tk.StringVar()
+        self.searchBarWidget = tk.Entry(self,textvariable = self.searchTextVar)
+        self.searchBarWidget.grid(row=1,column=1)
 
-        searchBarWidget.bind("<Key>",key)
-
-        self.searchSpace = tk.Canvas(width=200,height=300,bg = "#eee",
+        self.searchSpace = SearchSpace(self,width=250,height=300,bg = "#eee",
                     bd=1, relief='raised')
         self.searchSpace.grid(row=2,column=1,sticky=W+E+N+S)
 
@@ -58,9 +57,6 @@ class Frontend(tk.Tk):
         viewMenu.add_command(label="Text smaller",
                     command=self.whiteboard.decreaseTextSize)
         menubar.add_cascade(label="View", menu=viewMenu)
-
-def key(event):
-    print "lol", event.char
 
 if __name__ == "__main__":
     app = Frontend()

@@ -1,4 +1,6 @@
-def main():
+from sympy import S
+
+def loadEquations():
     with open("Equations.txt") as textfile:
         mystr = textfile.read()
 
@@ -9,7 +11,8 @@ def main():
     outlist = []
 
     for sublist in sublists:
-        equation = sublist[0]
+        lhs,rhs = sublist[0].split("=")
+        equation = str(S(lhs))+"="+str(S(rhs))
         unitsDict = {}
         for bit in sublist[1:-1]:
             lhs,rhs = bit.split("::")
@@ -21,4 +24,4 @@ def main():
     return outlist
 
 if __name__ == '__main__':
-    main()
+    print loadEquations()
