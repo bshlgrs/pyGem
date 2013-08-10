@@ -1,4 +1,4 @@
-# Frontend.py
+#!/usr/bin/python
 import Tkinter as tk
 from Backend import Backend
 from Whiteboard import Whiteboard

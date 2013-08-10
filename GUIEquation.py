@@ -12,7 +12,8 @@ class GUIEquation(Equation):
         self.root = root
 
         self.x = 200
-        self.y = 200+70*self.getMyEqNo()
+
+        self.y = (200+70*self.getMyEqNo())%int(root.cget("height"))
 
         self.dragX = 0
         self.dragY = 0
@@ -62,15 +63,16 @@ class GUIEquation(Equation):
             textPos = int((event.x-a[0])/size)
 
             clickedThing = self.getThingAtTextPosition(textPos)
-            if clickedThing[0] == "Thing":
-                self.dragX = event.x
-                self.dragY = event.y
-                self.beingDragged = True
-            else:
+            if clickedThing[0] != "Thing":
                 box = self.root.root.infoBox
                 box.delete('1.0','end')
                 box.insert('1.0',"%s :: "%clickedThing[1])
                 box.insert('end',self.root.dimensions[clickedThing[1]])
+            self.dragX = event.x
+            self.dragY = event.y
+            self.beingDragged = True
+
+
 
 
     def onClickRelease(self,event):

@@ -34,8 +34,6 @@ class Whiteboard(tk.Canvas, Backend):
 
         self.currentDragLine = None
 
-
-
     def allTextThings(self):
         return self.equations
 
@@ -44,19 +42,19 @@ class Whiteboard(tk.Canvas, Backend):
         self.equations[-1].draw()
 
     def onClickPress(self,event):
-        for equation in self.equations:
+        for equation in self.allTextThings():
             equation.onClickPress(event)
 
     def onClickRelease(self,event):
-        for equation in self.equations:
+        for equation in self.allTextThings():
             equation.onClickRelease(event)
 
     def handleMotion(self,event):
-        for equation in self.equations:
+        for equation in self.allTextThings():
             equation.handleMotion(event)
 
     def onRightClickPress(self,event):
-        for equation in self.equations:
+        for equation in self.allTextThings():
             equation.onRightClickPress(event)
 
     def increaseTextSize(self):

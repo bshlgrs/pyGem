@@ -14,6 +14,8 @@ class SearchSpace(tk.Canvas):
 
         self.text = None
 
+        self.bind("<ButtonPress-1>",self.addEquation)
+
     def key(self,event):
         def similarity(list1, list2):
             return all(any(x in y for y in list2) for x in list1)
@@ -27,9 +29,20 @@ class SearchSpace(tk.Canvas):
         if mylist == []:
             return
 
-        matches = [x[0] for x in self.library if similarity(mylist,x[2])]
-        self.text = self.create_text(10,10,text = "\n\n".join(matches),
-            anchor="nw", font=("Courier", 18, "bold"))
+        self.matches = [x for x in self.library if similarity(mylist,x[4])]
 
-        print "\n\n\n"+"\n".join(matches)
+        matchesText = "\n\n".join(x[0] for x in self.matches)
 
+        self.text = self.create_text(10,10,text = matchesText,
+            anchor="nw", font=("Courier", 18, "bold"),fill="#033",tags="search")
+
+    def addEquation(self,event):
+        bBox = self.bbox("search")
+        numberOfLines = len(self.matches) * 2 - 1
+        linePressed = int(((event.y-bBox[1])*float(numberOfLines))/
+                            (bBox[3] - bBox[1]))
+
+        if linePressed%2==0:
+            equation = self.matches[linePressed/2]
+            self.root.whiteboard.addGUIEquation(equation[1],equation[2],
+                                            equation[3])
