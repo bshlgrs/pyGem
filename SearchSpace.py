@@ -9,10 +9,12 @@ class SearchSpace(tk.Canvas):
         self.searchTextVar = self.root.searchTextVar
 
         self.searchBarWidget.bind("<Key>",self.key)
+        self.searchBarWidget.bind("<Return>",self.clear)
 
         self.library = EquationParser.loadEquations()
 
         self.text = None
+        self.matches = None
 
         self.bind("<ButtonPress-1>",self.addEquation)
 
@@ -20,7 +22,14 @@ class SearchSpace(tk.Canvas):
         def similarity(list1, list2):
             return all(any(x in y for y in list2) for x in list1)
 
-        string = self.searchTextVar.get()
+        # This bit is surely hackier than strictly necessary...
+        if event.char.lower() in "qwertyuiopasdfghjklzxcvbnm":
+            string = self.searchTextVar.get() + event.char
+        elif event.char == '\x7f':
+            string = self.searchTextVar.get()[:-1]
+        else:
+            string = self.searchTextVar.get()
+
         mylist = string.split()
 
         if self.text:
@@ -34,15 +43,27 @@ class SearchSpace(tk.Canvas):
         matchesText = "\n\n".join(x[0] for x in self.matches)
 
         self.text = self.create_text(10,10,text = matchesText,
-            anchor="nw", font=("Courier", 18, "bold"),fill="#033",tags="search")
+                anchor="nw", font=("Courier", 18, "bold"),fill="#033",
+                            tags="search")
+
+        if event.char == '\r':
+            equation = self.matches[0]
+            self.root.whiteboard.addGUIEquation(equation[1],equation[2],
+                                            equation[3])
 
     def addEquation(self,event):
+        if not self.matches:
+            return
         bBox = self.bbox("search")
         numberOfLines = len(self.matches) * 2 - 1
         linePressed = int(((event.y-bBox[1])*float(numberOfLines))/
                             (bBox[3] - bBox[1]))
 
-        if linePressed%2==0:
+        if linePressed%2==0 and linePressed <= len(self.matches)*2:
             equation = self.matches[linePressed/2]
             self.root.whiteboard.addGUIEquation(equation[1],equation[2],
                                             equation[3])
+
+    def clear(self,event):
+        self.key(event)
+        self.searchTextVar.set("")

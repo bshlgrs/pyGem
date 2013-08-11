@@ -3,6 +3,7 @@ import Tkinter as tk
 from Backend import Backend
 from GUIEquation import GUIEquation
 from math import sqrt
+from time import time
 
 class Whiteboard(tk.Canvas, Backend):
     def __init__(self, root, *args, **kwargs):
@@ -14,25 +15,18 @@ class Whiteboard(tk.Canvas, Backend):
         self.tag_bind("Draggable",
                                 "<ButtonRelease-1>",self.onClickRelease)
         self.tag_bind("Draggable","<B1-Motion>",self.handleMotion)
-      #  self.tag_bind("Draggable","<ButtonPress-2>",self.onRightClickPress)
+        self.tag_bind("Draggable","<ButtonPress-2>",self.onRightClickPress)
+
+        self.bind("<B2-Motion>",self.handleRightMotion)
+        self.bind("<ButtonRelease-2>",self.onRightClickRelease)
 
         self.textSize = 26
 
         self.equivalenceLines = []
 
-        self.addGUIEquation("EK","0.5*m*v**2",{"EK":"J","m":"kg",
-                                          "v":"m*s^-1"})
-
-        self.addGUIEquation("EP","m*g*h",{"EP":"J","m":"kg",
-                                        "g":"m*s^-2", "h":"m"})
-
-        self.addGUIEquation("F","m*a",{"F":"N","m":"kg","a":"m*s^-2"})
-
-        self.addGUIEquivalence("m","m2")
-        self.addGUIEquivalence("m3","m2")
-        self.addGUIEquivalence("EP","EK")
-
         self.currentDragLine = None
+        self.dragStartVar = None
+        self.dragStartCoords = None
 
     def allTextThings(self):
         return self.equations
@@ -42,28 +36,44 @@ class Whiteboard(tk.Canvas, Backend):
         self.equations[-1].draw()
 
     def onClickPress(self,event):
-        for equation in self.allTextThings():
-            equation.onClickPress(event)
+        for textThing in self.allTextThings():
+            textThing.onClickPress(event)
 
     def onClickRelease(self,event):
-        for equation in self.allTextThings():
-            equation.onClickRelease(event)
+        for textThing in self.allTextThings():
+            textThing.onClickRelease(event)
 
     def handleMotion(self,event):
-        for equation in self.allTextThings():
-            equation.handleMotion(event)
+        for textThing in self.allTextThings():
+            textThing.handleMotion(event)
 
     def onRightClickPress(self,event):
-        for equation in self.allTextThings():
-            equation.onRightClickPress(event)
+        for textThing in self.equations:
+            textThing.onRightClickPress(event)
+
+    def onRightClickRelease(self,event):
+        for textThing in self.equations:
+            textThing.onRightClickRelease(event)
+        self.delete(self.currentDragLine)
+        self.currentDragLine = None
+        self.dragStartCoords = None
+
+    def handleRightMotion(self,event):
+        if self.currentDragLine:
+            self.delete(self.currentDragLine)
+        if not self.dragStartCoords:
+            return
+        startx, starty = self.dragStartCoords
+        self.currentDragLine = self.create_line(startx, starty,
+            event.x,event.y, dash=(1,4))
 
     def increaseTextSize(self):
-        self.textSize +=2
+        self.textSize += 2
         for thing in self.allTextThings():
             thing.draw()
 
     def decreaseTextSize(self):
-        self.textSize -=2
+        self.textSize -= 2
         for thing in self.allTextThings():
             thing.draw()
 
@@ -78,17 +88,22 @@ class Whiteboard(tk.Canvas, Backend):
                 return pos
 
     def addGUIEquivalence(self,var1,var2):
-        self.addEquivalency([var1,var2])
+        if self.dimensions[var1] == self.dimensions[var2]:
+            self.addEquivalency([var1,var2])
 
-        self.updateEquivalencyLines()
+            self.updateEquivalencyLines()
+        else:
+            print "incompatible dimensions"
 
     def updateEquivalencyLines(self):
         # This function has more functionality than it strictly needs to
         def drawShrunkLines(start,end,shrink1,shrink2,**kwargs):
             def step(x1,y1,x2,y2,stepSize):
-                length = sqrt((x1-x2)**2+(y1-y2)**2)
-                ratio = (length+stepSize)/ length
-                return ((x2-x1)/ratio+x1,(y2-y1)/ratio+y1)
+                if (x1,y1)!=(x2,y2):
+                    length = sqrt((x1-x2)**2+(y1-y2)**2)
+                    ratio = (length+stepSize)/ length
+                    return ((x2-x1)/ratio+x1,(y2-y1)/ratio+y1)
+                return (x1,y1)
 
             (x1,y1),(x2,y2) = start, end
             return self.create_line(step(x1,y1,x2,y2,shrink1),

@@ -72,9 +72,6 @@ class GUIEquation(Equation):
             self.dragY = event.y
             self.beingDragged = True
 
-
-
-
     def onClickRelease(self,event):
         self.beingDragged = False
         if self.y<0:
@@ -93,11 +90,36 @@ class GUIEquation(Equation):
             self.root.updateEquivalencyLines()
 
     def onRightClickPress(self,event):
-        if (self.root.find_closest(event.x, event.y)[0]
-                                    == self.opsTextID):
+        if (self.root.find_closest(event.x, event.y)[0] == self.opsTextID):
+            a = self.root.bbox(self.tagString)
+            size = float((a[2]-a[0]))/len(self.text)
+            textPos = int((event.x-a[0])/size)
 
-            self.__del__()
+            clickedThing = self.getThingAtTextPosition(textPos)
 
+            print "Click on", clickedThing
+
+            if clickedThing[0] == "Var":
+                self.root.dragStartVar = clickedThing[1]
+                self.root.dragStartCoords = self.getActualCanvasPositionOfVar(
+                                                            clickedThing[1])
+
+
+        # This doesn't work consistently...
+    def onRightClickRelease(self,event):
+        if (self.root.find_closest(event.x, event.y)[0] == self.opsTextID):
+            a = self.root.bbox(self.tagString)
+            size = float((a[2]-a[0]))/len(self.text)
+            textPos = int((event.x-a[0])/size)
+
+            clickedThing = self.getThingAtTextPosition(textPos)
+
+            print "Released", clickedThing
+
+            if clickedThing[0] == "Var":
+                print clickedThing[1]
+                self.root.addGUIEquivalence(self.root.dragStartVar,
+                                                clickedThing[1])
 
     def getThingAtTextPosition(self,position):
         inlist = re.finditer("\w*[a-zA-Z]\w*",self.text)

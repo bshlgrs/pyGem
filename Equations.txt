@@ -1,5 +1,5 @@
 EK=0.5*m*v**2; EK :: J; m :: kg; v:: m*s^-1; kinetic energy mass velocity.
-EP=m*g*h; EP :: J; m :: kg; g :: kg * m^-2; h :: m;
+EP=m*g*h; EP :: J; m :: kg; g :: m*s^-2; h :: m;
         potential energy gravity mass acceleration.
 f=m*a; f :: N; m :: kg; a :: m*s^-2; force mass acceleration.
 v=d/t; v :: m*s^-1; d :: m; t :: s; velocity distance time.
