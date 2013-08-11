@@ -1,7 +1,0 @@
-add equation KE = 0.5 m1 v^2
-add equation PE = m2 g h
-declare equal m1 m2
-declare equal KE PE
-write v
-rewrite v without KE using 1
-finish
