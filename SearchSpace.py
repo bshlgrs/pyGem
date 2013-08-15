@@ -1,5 +1,6 @@
 import Tkinter as tk
 import EquationParser
+from utilityFunctions import rewriteExpression, unicodify
 
 class SearchSpace(tk.Canvas):
     def __init__(self, root, *args, **kwargs):
@@ -40,7 +41,8 @@ class SearchSpace(tk.Canvas):
 
         self.matches = [x for x in self.library if similarity(mylist,x[4])]
 
-        matchesText = "\n\n".join(x[0] for x in self.matches)
+        matchesText = "\n\n".join(unicodify(rewriteExpression(x[0]))
+                                                 for x in self.matches)
 
         self.text = self.create_text(10,10,text = matchesText,
                 anchor="nw", font=("Courier", 18, "bold"),fill="#033",

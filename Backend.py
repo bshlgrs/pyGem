@@ -202,7 +202,7 @@ class Backend(object):
         newEquivalency = self.equivalencies[-1]
 
         for var in self.expressions:
-            self.expressions[var] = [unifyVarsInExpression(x) for
+            self.expressions[var] = [self.unifyVarsInExpression(x) for
                                     x in self.expressions[var]]
 
     def rotateVariableInExpression(self,varToChange,oldName):
@@ -218,15 +218,18 @@ class Backend(object):
             oldName: This is the name of the variable whose name we want
                 to change, eg m in the previous example.
         """
+        try:
+            group = [x for x in self.equivalencies if oldName in x][0]
+        except IndexError:
+            return
 
-        group = [x for x in self.equivalencies if oldName in x][0]
         newName = group[(group.index(oldName) + 1) % len(group)]
+        print newName
 
         varExpressions = self.expressions[varToChange]
         self.expressions[varToChange] = []
         for exp in varExpressions:
-            self.expressions[varToChange].append(
-                                        replaceName(exp,oldName,newName))
+            self.expressions[varToChange].append(exp.subs(oldName,newName))
 
     def rewriteUsingExpression(self,var,varToRemove,varWhoseExpToUse):
         """

@@ -1,9 +1,10 @@
 # GUIEquation.py
 
 from Equation import Equation
+from GUIExpression import GUIExpression
 import random
 import re
-
+from utilityFunctions import unicodify
 
 class GUIEquation(Equation):
     def __init__(self,lhs,rhs,root):
@@ -52,7 +53,8 @@ class GUIEquation(Equation):
                  fill = "#066",
                     font = ("Courier", self.root.textSize, "bold"))
         self.opsTextID = self.root.create_text((self.x,self.y),
-            text =self.opsString, tags = ("Draggable", self.tagString),
+            text =self.opsString, tags = ("Draggable", "Equation",
+                self.tagString),
                     font = ("Courier", self.root.textSize, "normal"))
 
 
@@ -64,10 +66,8 @@ class GUIEquation(Equation):
 
             clickedThing = self.getThingAtTextPosition(textPos)
             if clickedThing[0] != "Thing":
-                box = self.root.root.infoBox
-                box.delete('1.0','end')
-                box.insert('1.0',"%s :: "%clickedThing[1])
-                box.insert('end',self.root.dimensions[clickedThing[1]])
+                self.root.write("%s :: "%clickedThing[1]
+                             + self.root.dimensions[clickedThing[1]])
             self.dragX = event.x
             self.dragY = event.y
             self.beingDragged = True
@@ -76,6 +76,16 @@ class GUIEquation(Equation):
         self.beingDragged = False
         if self.y<0:
             self.__del__()
+
+    def onDoubleClick(self,event):
+        if self.root.find_closest(event.x, event.y)[0] == self.opsTextID:
+            a = self.root.bbox(self.tagString)
+            size = float((a[2]-a[0]))/len(self.text)
+            textPos = int((event.x-a[0])/size)
+
+            clickedThing = self.getThingAtTextPosition(textPos)
+            if clickedThing[0] != "Thing":
+                self.root.findGUIExpression(clickedThing[1],self)
 
     def handleMotion(self,event):
         if self.beingDragged:
@@ -107,6 +117,7 @@ class GUIEquation(Equation):
 
         # This doesn't work consistently...
     def onRightClickRelease(self,event):
+        print self.text, self.root.find_closest(event.x, event.y)[0], self.opsTextID, self.varsTextID
         if (self.root.find_closest(event.x, event.y)[0] == self.opsTextID):
             a = self.root.bbox(self.tagString)
             size = float((a[2]-a[0]))/len(self.text)
@@ -155,9 +166,7 @@ class GUIEquation(Equation):
 
 
 def main():
-    a = GUIEquation("Ek","0.5*m*v**2",None)
-    print a.getThingAtTextPosition(1)
-    print a.getPositionsOfVar("Ek")
+    pass
 
 if __name__ == '__main__':
     main()

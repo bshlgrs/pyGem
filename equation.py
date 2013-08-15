@@ -1,6 +1,7 @@
 import sympy as s
 from sympy.solvers import solve
 import re
+from utilityFunctions import rewriteExpression, unicodify
 
 class Equation():
     """
@@ -14,7 +15,7 @@ class Equation():
     """
     def __init__(self,lhs,rhs):
         self.equation = s.S(lhs) - s.S(rhs)
-        self.text = lhs + "=" + rhs
+        self.text = unicodify(rewriteExpression(lhs + "=" + rhs))
 
     def __repr__(self):
         return self.text

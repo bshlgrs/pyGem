@@ -2,6 +2,7 @@
 import Tkinter as tk
 from Backend import Backend
 from GUIEquation import GUIEquation
+from GUIExpression import GUIExpression
 from math import sqrt
 from time import time
 
@@ -17,6 +18,8 @@ class Whiteboard(tk.Canvas, Backend):
         self.tag_bind("Draggable","<B1-Motion>",self.handleMotion)
         self.tag_bind("Draggable","<ButtonPress-2>",self.onRightClickPress)
 
+        self.tag_bind("Draggable","<Double-Button-1>",self.onDoubleClick)
+
         self.bind("<B2-Motion>",self.handleRightMotion)
         self.bind("<ButtonRelease-2>",self.onRightClickRelease)
 
@@ -24,12 +27,14 @@ class Whiteboard(tk.Canvas, Backend):
 
         self.equivalenceLines = []
 
+        self.guiExpressions = {}
+
         self.currentDragLine = None
         self.dragStartVar = None
         self.dragStartCoords = None
 
     def allTextThings(self):
-        return self.equations
+        return self.equations + self.guiExpressions.values()
 
     def addGUIEquation(self,lhs,rhs,units):
         self.addEquation(GUIEquation(lhs,rhs,self),units)
@@ -52,9 +57,10 @@ class Whiteboard(tk.Canvas, Backend):
             textThing.onRightClickPress(event)
 
     def onRightClickRelease(self,event):
+        self.delete(self.currentDragLine)
         for textThing in self.equations:
             textThing.onRightClickRelease(event)
-        self.delete(self.currentDragLine)
+
         self.currentDragLine = None
         self.dragStartCoords = None
 
@@ -66,6 +72,10 @@ class Whiteboard(tk.Canvas, Backend):
         startx, starty = self.dragStartCoords
         self.currentDragLine = self.create_line(startx, starty,
             event.x,event.y, dash=(1,4))
+
+    def onDoubleClick(self,event):
+        for thing in self.allTextThings():
+            thing.onDoubleClick(event)
 
     def increaseTextSize(self):
         self.textSize += 2
@@ -123,3 +133,13 @@ class Whiteboard(tk.Canvas, Backend):
                     newline = drawShrunkLines(self.findVariablePosition(var1),
                             self.findVariablePosition(var2),16,16,dash=(4,4))
                     self.equivalenceLines.append(newline)
+
+    def findGUIExpression(self, var, equation):
+        self.findExpression(var,equation)
+        self.guiExpressions[var] = GUIExpression(var,self)
+
+
+    def write(self,*args):
+        box = self.root.infoBox
+        box.delete('1.0','end')
+        box.insert('1.0'," ".join(str(x) for x in args))

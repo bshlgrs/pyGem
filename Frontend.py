@@ -23,6 +23,7 @@ class Frontend(tk.Tk):
         self.searchTextVar = tk.StringVar()
         self.searchBarWidget = tk.Entry(self,textvariable = self.searchTextVar)
         self.searchBarWidget.grid(row=1,column=1)
+        self.searchBarWidget.focus()
 
         self.searchSpace = SearchSpace(self,width=250,height=300,bg = "#eee",
                     bd=1, relief='raised')
@@ -57,6 +58,8 @@ class Frontend(tk.Tk):
         viewMenu.add_command(label="Text smaller",
                     command=self.whiteboard.decreaseTextSize)
         menubar.add_cascade(label="View", menu=viewMenu)
+
+
 
 if __name__ == "__main__":
     app = Frontend()
