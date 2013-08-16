@@ -44,6 +44,23 @@ def unicodify(instr):
         return thing
     return re.sub("[0-9]+/[0-9]+[*]",change,instr)
 
+def splitStrings(text):
+    def getThingAtTextPosition(position):
+        inlist = re.finditer("\w*[a-zA-Z]\w*",text)
+        for match in inlist:
+            if match.start() <= position < match.end():
+                return ("Var",match.group())
+        return ("Thing",text[position])
+    string1 = []
+    string2 = []
+    for a in range(len(text)):
+        if getThingAtTextPosition(a)[0]=="Var":
+            string1.append(text[a])
+            string2.append(" ")
+        else:
+            string1.append(" ")
+            string2.append(text[a])
+    return ("".join(string1),"".join(string2))
 
 if __name__ == "__main__":
 #    print numberGuess(-1.41421356)

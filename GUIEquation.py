@@ -4,7 +4,7 @@ from Equation import Equation
 from GUIExpression import GUIExpression
 import random
 import re
-from utilityFunctions import unicodify
+from utilityFunctions import unicodify, splitStrings
 
 class GUIEquation(Equation):
     def __init__(self,lhs,rhs,root):
@@ -25,7 +25,7 @@ class GUIEquation(Equation):
 
         self.tagString = "".join(chr(ord(x)+17) for x in str(id(self)))
 
-        self.varsString, self.opsString = self.splitStrings()
+        self.varsString, self.opsString = splitStrings(self.text)
 
         self.draw()
 
@@ -44,7 +44,7 @@ class GUIEquation(Equation):
             return len(self.root.equations)
 
     def draw(self):
-        self.varsString, self.opsString = self.splitStrings()
+        self.varsString, self.opsString = splitStrings(self.text)
         if self.varsTextID is not None:
             self.root.delete(self.varsTextID)
             self.root.delete(self.opsTextID)
@@ -60,11 +60,8 @@ class GUIEquation(Equation):
 
     def onClickPress(self,event):
         if self.root.find_closest(event.x, event.y)[0] == self.opsTextID:
-            a = self.root.bbox(self.tagString)
-            size = float((a[2]-a[0]))/len(self.text)
-            textPos = int((event.x-a[0])/size)
+            clickedThing = self.getClickedThing(event)
 
-            clickedThing = self.getThingAtTextPosition(textPos)
             if clickedThing[0] != "Thing":
                 self.root.write("%s :: "%clickedThing[1]
                              + self.root.dimensions[clickedThing[1]])
@@ -79,11 +76,8 @@ class GUIEquation(Equation):
 
     def onDoubleClick(self,event):
         if self.root.find_closest(event.x, event.y)[0] == self.opsTextID:
-            a = self.root.bbox(self.tagString)
-            size = float((a[2]-a[0]))/len(self.text)
-            textPos = int((event.x-a[0])/size)
+            clickedThing = self.getClickedThing(event)
 
-            clickedThing = self.getThingAtTextPosition(textPos)
             if clickedThing[0] != "Thing":
                 self.root.findGUIExpression(clickedThing[1],self)
 
@@ -101,11 +95,8 @@ class GUIEquation(Equation):
 
     def onRightClickPress(self,event):
         if (self.root.find_closest(event.x, event.y)[0] == self.opsTextID):
-            a = self.root.bbox(self.tagString)
-            size = float((a[2]-a[0]))/len(self.text)
-            textPos = int((event.x-a[0])/size)
 
-            clickedThing = self.getThingAtTextPosition(textPos)
+            clickedThing=self.getClickedThing(event)
 
             print "Click on", clickedThing
 
@@ -119,11 +110,7 @@ class GUIEquation(Equation):
     def onRightClickRelease(self,event):
         print self.text, self.root.find_closest(event.x, event.y)[0], self.opsTextID, self.varsTextID
         if (self.root.find_closest(event.x, event.y)[0] == self.opsTextID):
-            a = self.root.bbox(self.tagString)
-            size = float((a[2]-a[0]))/len(self.text)
-            textPos = int((event.x-a[0])/size)
-
-            clickedThing = self.getThingAtTextPosition(textPos)
+            clickedThing=self.getClickedThing(event)
 
             print "Released", clickedThing
 
@@ -139,18 +126,6 @@ class GUIEquation(Equation):
                 return ("Var",match.group())
         return ("Thing",self.text[position])
 
-    def splitStrings(self):
-        string1 = []
-        string2 = []
-        for a in range(len(self.text)):
-            if self.getThingAtTextPosition(a)[0]=="Var":
-                string1.append(self.text[a])
-                string2.append(" ")
-            else:
-                string1.append(" ")
-                string2.append(self.text[a])
-        return ("".join(string1),"".join(string2))
-
     def getTextPositionOfVar(self,var):
         inlist = re.finditer("\w*[a-zA-Z]\w*",self.text)
         return [x.span() for x in inlist if x.group()==var][0]
@@ -164,6 +139,12 @@ class GUIEquation(Equation):
         return ((bBox[2]-bBox[0])*self.getAveragePositionOfVar(var)
                     /len(self.text) + bBox[0],(bBox[1]+bBox[3])/2.0)
 
+    def getClickedThing(self,event):
+        a = self.root.bbox(self.tagString)
+        size = float((a[2]-a[0]))/len(self.text)
+        textPos = int((event.x-a[0])/size)
+
+        return self.getThingAtTextPosition(textPos)
 
 def main():
     pass

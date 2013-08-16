@@ -1,14 +1,16 @@
 import re
-from utilityFunctions import rewriteExpression, unicodify
+from utilityFunctions import rewriteExpression, unicodify, splitStrings
 
 class GUIExpression(object):
     def __init__(self,var,root):
         self.var = var
         self.root = root
-        self.x,self.y = 100,100
+        self.x,self.y = 300,100
 
         self.varsTextID = None
         self.opsTextID = None
+
+        self.tagString = "".join(chr(ord(x)+17) for x in str(id(self)))
 
         self.draw()
 
@@ -30,7 +32,7 @@ class GUIExpression(object):
         self.text = self.var+"="+rewriteExpression(self.expString())
         self.text = unicodify(self.text)
 
-        varsString, opsString = self.splitStrings()
+        varsString, opsString = splitStrings(self.text)
 
         self.varsTextID = self.root.create_text((self.x,self.y),
             text = varsString,
@@ -39,7 +41,7 @@ class GUIExpression(object):
 
         self.opsTextID = self.root.create_text((self.x,self.y),
             text = opsString,
-                fill = "#000", tags = "Draggable",
+                fill = "#000", tags = ("Draggable",self.tagString),
                     font = ("Courier", self.root.textSize-2, "normal"))
 
     def expString(self):
@@ -78,11 +80,7 @@ class GUIExpression(object):
     def onDoubleClick(self,event):
         if (self.root.find_closest(event.x, event.y)[0]
                         == self.opsTextID):
-            a = self.root.bbox(self.opsTextID)
-            size = float((a[2]-a[0]))/len(self.text)
-            textPos = int((event.x-a[0])/size)
-
-            clickedThing = self.getThingAtTextPosition(textPos)
+            clickedThing = self.getClickedThing(event)
             print clickedThing
             if clickedThing[0] != "Thing":
                 self.root.rotateVariableInExpression(self.var,clickedThing[1])
@@ -95,14 +93,9 @@ class GUIExpression(object):
                 return ("Var",match.group())
         return ("Thing",self.text[position])
 
-    def splitStrings(self):
-        string1 = []
-        string2 = []
-        for a in range(len(self.text)):
-            if self.getThingAtTextPosition(a)[0]=="Var":
-                string1.append(self.text[a])
-                string2.append(" ")
-            else:
-                string1.append(" ")
-                string2.append(self.text[a])
-        return ("".join(string1),"".join(string2))
+    def getClickedThing(self,event):
+        a = self.root.bbox(self.tagString)
+        size = float((a[2]-a[0]))/len(self.text)
+        textPos = int((event.x-a[0])/size)
+
+        return self.getThingAtTextPosition(textPos)
