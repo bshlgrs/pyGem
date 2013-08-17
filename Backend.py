@@ -170,7 +170,7 @@ class Backend(object):
                     assert (self.dimensions[group[0]] ==
                                                  self.dimensions[thing])
 
-    def findExpression(self,var,equation):
+    def findExpression(self,var,equation=None):
         """
         Finds expressions for var and adds them to the dict of
         expressions.
@@ -181,6 +181,9 @@ class Backend(object):
 
         Returns nothing.
         """
+
+        if equation is None:
+            equation = self.findEquationWithVar(var)
 
         if var in equation.getVars():
             exps = equation.solve(var)
@@ -263,10 +266,12 @@ class Backend(object):
 
         outexps = []
 
+        if var not in self.expressions:
+            self.findExpression(var)
+
         for exp1 in self.expressions[var]:
             for exp2 in exps:
                 outexps.append(exp1.subs(varToRemove,exp2))
-
 
         self.expressions[var] = [self.unifyVarsInExpression(x)
                         for x in outexps]

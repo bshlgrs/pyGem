@@ -1,4 +1,6 @@
 # Whiteboard.py
+
+
 import Tkinter as tk
 from Backend import Backend
 from GUIEquation import GUIEquation
@@ -16,12 +18,8 @@ class Whiteboard(tk.Canvas, Backend):
         self.tag_bind("Draggable",
                                 "<ButtonRelease-1>",self.onClickRelease)
         self.tag_bind("Draggable","<B1-Motion>",self.handleMotion)
-        self.tag_bind("Draggable","<ButtonPress-2>",self.onRightClickPress)
 
         self.tag_bind("Draggable","<Double-Button-1>",self.onDoubleClick)
-
-        self.bind("<B2-Motion>",self.handleRightMotion)
-        self.bind("<ButtonRelease-2>",self.onRightClickRelease)
 
         self.textSize = 26
 
@@ -29,8 +27,12 @@ class Whiteboard(tk.Canvas, Backend):
 
         self.guiExpressions = {}
 
+        # currentAction can be None, "Drag", "Equate", "DragFromExp"
+        self.currentAction = None
+
         self.currentDragLine = None
         self.dragStartVar = None
+        self.dragStartExpressionVar = None
         self.dragStartCoords = None
 
     def allTextThings(self):
@@ -45,26 +47,27 @@ class Whiteboard(tk.Canvas, Backend):
             textThing.onClickPress(event)
 
     def onClickRelease(self,event):
-        for textThing in self.allTextThings():
-            textThing.onClickRelease(event)
+        # We need to delete the drag line before we do our loop
+        if self.currentAction == "Drag":
+            for textThing in self.allTextThings():
+                textThing.onClickRelease(event)
+
+
+        if self.currentAction in ["DragFromExp","Equate"]:
+            if self.currentDragLine:
+                self.delete(self.currentDragLine)
+
+            for textThing in self.allTextThings():
+                textThing.onClickRelease(event)
+
+            self.currentDragLine = None
+            self.dragStartVar = None
+            self.dragStartCoords = None
+            self.dragStartExpressionVar = None
 
     def handleMotion(self,event):
         for textThing in self.allTextThings():
             textThing.handleMotion(event)
-
-    def onRightClickPress(self,event):
-        for textThing in self.equations:
-            textThing.onRightClickPress(event)
-
-    def onRightClickRelease(self,event):
-        self.delete(self.currentDragLine)
-        for textThing in self.equations:
-            textThing.onRightClickRelease(event)
-
-        self.currentDragLine = None
-        self.dragStartCoords = None
-
-    def handleRightMotion(self,event):
         if self.currentDragLine:
             self.delete(self.currentDragLine)
         if not self.dragStartCoords:
@@ -72,6 +75,10 @@ class Whiteboard(tk.Canvas, Backend):
         startx, starty = self.dragStartCoords
         self.currentDragLine = self.create_line(startx, starty,
             event.x,event.y, dash=(1,4))
+
+    def onRightClickPress(self,event):
+        for textThing in self.equations:
+            textThing.onRightClickPress(event)
 
     def onDoubleClick(self,event):
         for thing in self.allTextThings():
@@ -98,6 +105,8 @@ class Whiteboard(tk.Canvas, Backend):
                 return pos
 
     def addGUIEquivalence(self,var1,var2):
+        if var1 is None or var2 is None:
+            return
         if self.dimensions[var1] == self.dimensions[var2]:
             self.addEquivalency([var1,var2])
 
@@ -137,6 +146,10 @@ class Whiteboard(tk.Canvas, Backend):
     def findGUIExpression(self, var, equation):
         self.findExpression(var,equation)
         self.guiExpressions[var] = GUIExpression(var,self)
+
+    def rewriteUsingEquation(self,var,varToRemove,equation):
+        Backend.rewriteUsingEquation(self,var,varToRemove,equation)
+        self.guiExpressions[var].draw()
 
 
     def write(self,*args):

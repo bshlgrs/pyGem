@@ -1,7 +1,8 @@
 import re
 from utilityFunctions import rewriteExpression, unicodify, splitStrings
+from GUIEquation import GUIEquation
 
-class GUIExpression(object):
+class GUIExpression(GUIEquation):
     def __init__(self,var,root):
         self.var = var
         self.root = root
@@ -19,7 +20,7 @@ class GUIExpression(object):
         self.beingDragged = False
 
     def __del__(self):
-        TODO
+        del self.root.expressions[self.var]
         if self.varsTextID:
             self.root.delete(self.varsTextID)
             self.root.delete(self.opsTextID)
@@ -30,7 +31,7 @@ class GUIExpression(object):
             self.root.delete(self.opsTextID)
 
         self.text = self.var+"="+rewriteExpression(self.expString())
-        self.text = unicodify(self.text)
+        self.text = unicodify(self.text,False)
 
         varsString, opsString = splitStrings(self.text)
 
@@ -59,12 +60,29 @@ class GUIExpression(object):
     def onClickPress(self,event):
         if (self.root.find_closest(event.x, event.y)[0]
                         == self.opsTextID):
-            self.dragX = event.x
-            self.dragY = event.y
-            self.beingDragged = True
+            clickedThing = self.getClickedThing(event)
+            print clickedThing
+            if clickedThing is None:
+                return
+            elif clickedThing[0]=="Thing":
+                self.dragX = event.x
+                self.dragY = event.y
+                self.beingDragged = True
+                self.root.currentAction = "Drag"
+            elif clickedThing[0]=="Var":
+                self.root.currentAction = "DragFromExp"
+                self.root.dragStartVar = clickedThing[1]
+                self.root.dragStartExpressionVar = self.var
+                self.root.dragStartCoords = \
+                            self.getActualCanvasPositionOfVar(clickedThing[1])
+
+            else:
+                raise Exception("This shouldn't happen!")
 
     def onClickRelease(self,event):
         self.beingDragged = False
+        if self.y<0:
+            self.__del__()
 
     def handleMotion(self,event):
         if self.beingDragged:
@@ -85,17 +103,3 @@ class GUIExpression(object):
             if clickedThing[0] != "Thing":
                 self.root.rotateVariableInExpression(self.var,clickedThing[1])
                 self.draw()
-
-    def getThingAtTextPosition(self,position):
-        inlist = re.finditer("\w*[a-zA-Z]\w*",self.text)
-        for match in inlist:
-            if match.start() <= position < match.end():
-                return ("Var",match.group())
-        return ("Thing",self.text[position])
-
-    def getClickedThing(self,event):
-        a = self.root.bbox(self.tagString)
-        size = float((a[2]-a[0]))/len(self.text)
-        textPos = int((event.x-a[0])/size)
-
-        return self.getThingAtTextPosition(textPos)
