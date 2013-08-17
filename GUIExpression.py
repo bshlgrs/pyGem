@@ -99,7 +99,11 @@ class GUIExpression(GUIEquation):
         if (self.root.find_closest(event.x, event.y)[0]
                         == self.opsTextID):
             clickedThing = self.getClickedThing(event)
-            print clickedThing
+
             if clickedThing[0] != "Thing":
-                self.root.rotateVariableInExpression(self.var,clickedThing[1])
+                if clickedThing[1]==self.var:
+                    self.root.findExpression(self.var)
+                else:
+                    self.root.rotateVariableInExpression(self.var,
+                                                            clickedThing[1])
                 self.draw()

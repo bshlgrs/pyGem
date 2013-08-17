@@ -7,6 +7,8 @@ v=u+a*t; v, u :: m*s^-1; a :: m*s^-2; t :: s; initial final velocity
         acceleration time.
 s=0.5*a*t**2 + u*t; s :: m; a :: m*s^-2; t :: s; u :: m*s^-1; position
         acceleration time initial final velocity.
+s=0.5*a*t**2; s :: m; a :: m*s^-2; t :: s; u :: m*s^-1; position
+        acceleration time final velocity.
 f=dp/dt; f :: N; dp :: N*s; dt :: s; force momentum time.
 a=v**2/r; a :: m*s^-2; v::m*s^-1; r::m; rotational acceleration velocity
         radius.

@@ -48,7 +48,7 @@ class SearchSpace(tk.Canvas):
                 anchor="nw", font=("Courier", 18, "bold"),fill="#033",
                             tags="search")
 
-        if event.char == '\r':
+        if event.char == '\r' and self.matches is not []:
             equation = self.matches[0]
             self.root.whiteboard.addGUIEquation(equation[1],equation[2],
                                             equation[3])

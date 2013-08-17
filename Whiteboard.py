@@ -111,6 +111,8 @@ class Whiteboard(tk.Canvas, Backend):
             self.addEquivalency([var1,var2])
 
             self.updateEquivalencyLines()
+            for a in self.guiExpressions.values():
+                a.draw()
         else:
             print "incompatible dimensions"
 
