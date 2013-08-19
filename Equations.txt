@@ -3,7 +3,7 @@ EP=m*g*h; EP :: J; m :: kg; g :: m*s^-2; h :: m;
         potential energy gravity mass acceleration.
 f=m*a; f :: N; m :: kg; a :: m*s^-2; force mass acceleration.
 v=d/t; v :: m*s^-1; d :: m; t :: s; velocity distance time.
-v=u+a*t; v, u :: m*s^-1; a :: m*s^-2; t :: s; initial final velocity
+v=u+a*t; v, u :: m*s^-1;, a :: m*s^-2; t :: s; initial final velocity
         acceleration time.
 s=0.5*a*t**2 + u*t; s :: m; a :: m*s^-2; t :: s; u :: m*s^-1; position
         acceleration time initial final velocity.
@@ -12,4 +12,5 @@ s=0.5*a*t**2; s :: m; a :: m*s^-2; t :: s; u :: m*s^-1; position
 f=dp/dt; f :: N; dp :: N*s; dt :: s; force momentum time.
 a=v**2/r; a :: m*s^-2; v::m*s^-1; r::m; rotational acceleration velocity
         radius.
-
+p=m*v; p :: N*s;m :: kg; v :: m*s^-1; momentum mass velocity.
+f=G*m1*m2/r**2; f :: N; G :: ?; m1, m2 :: kg; r :: m; force gravity mass radius

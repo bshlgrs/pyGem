@@ -153,6 +153,9 @@ class Whiteboard(tk.Canvas, Backend):
         Backend.rewriteUsingEquation(self,var,varToRemove,equation)
         self.guiExpressions[var].draw()
 
+    def rewriteUsingExpression(self,var,varToRemove,varToUse):
+        Backend.rewriteUsingExpression(self,var,varToRemove,varToUse)
+        self.guiExpressions[var].draw()
 
     def write(self,*args):
         box = self.root.infoBox

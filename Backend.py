@@ -272,7 +272,6 @@ class Backend(object):
         for exp1 in self.expressions[var]:
             for exp2 in exps:
                 outexps.append(exp1.subs(varToRemove,exp2))
-
         self.expressions[var] = [self.unifyVarsInExpression(x)
                         for x in outexps]
 
@@ -317,6 +316,7 @@ class Backend(object):
                     exp = exp.subs(var2,newVal)
             outexps.append(exp)
 
+        outexps = list(set(outexps))
 
         return outexps
 

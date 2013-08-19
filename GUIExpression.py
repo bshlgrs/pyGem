@@ -61,7 +61,6 @@ class GUIExpression(GUIEquation):
         if (self.root.find_closest(event.x, event.y)[0]
                         == self.opsTextID):
             clickedThing = self.getClickedThing(event)
-            print clickedThing
             if clickedThing is None:
                 return
             elif clickedThing[0]=="Thing":
@@ -81,6 +80,11 @@ class GUIExpression(GUIEquation):
 
     def onClickRelease(self,event):
         self.beingDragged = False
+
+        # if self.root.currentAction = "DragFromExp":
+        #     self.root.s
+
+
         if self.y<0:
             self.__del__()
 
