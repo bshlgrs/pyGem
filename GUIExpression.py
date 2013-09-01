@@ -6,7 +6,7 @@ class GUIExpression(GUIEquation):
     def __init__(self,var,root):
         self.var = var
         self.root = root
-        self.x,self.y = 300,100
+        self.x,self.y = 300,100+(40*len(root.expressions))%300
 
         self.varsTextID = None
         self.opsTextID = None

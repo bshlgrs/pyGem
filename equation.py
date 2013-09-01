@@ -48,10 +48,16 @@ class Equation():
                 newName = name+str(currentVarNumbers[name])
                 self.equation = self.equation.subs(name, newName)
                 self.text = replaceString(self.text,name,newName)
-                renamedUnits[newName] = newUnits[name]
+                if name in newUnits:
+                    renamedUnits[newName] = newUnits[name]
+                else:
+                    renamedUnits[newName] = "?"
             else:
                 currentVarNumbers[name]=1
-                renamedUnits[name] = newUnits[name]
+                if name in newUnits:
+                    renamedUnits[name] = newUnits[name]
+                else:
+                    renamedUnits[name] = "?"
 
         return renamedUnits
 

@@ -15,6 +15,9 @@ class Whiteboard(tk.Canvas, Backend):
         self.root = root
 
         self.tag_bind("Draggable","<ButtonPress-1>",self.onClickPress)
+
+        self.tag_bind("Draggable","<ButtonPress-2>",self.onRightClick)
+
         self.tag_bind("Draggable",
                                 "<ButtonRelease-1>",self.onClickRelease)
         self.tag_bind("Draggable","<B1-Motion>",self.handleMotion)
@@ -34,6 +37,14 @@ class Whiteboard(tk.Canvas, Backend):
         self.dragStartVar = None
         self.dragStartExpressionVar = None
         self.dragStartCoords = None
+
+        # create a menu
+        self.popup = tk.Menu(root, tearoff=0)
+        self.popup.add_command(label="Find expression",
+                command = lambda : findGUIExpression) # , command=next) etc...
+        self.popup.add_command(label="Add numerical value")
+        self.popup.add_separator()
+        self.popup.add_command(label="Delete equation")
 
     def allTextThings(self):
         return self.equations + self.guiExpressions.values()
@@ -76,9 +87,13 @@ class Whiteboard(tk.Canvas, Backend):
         self.currentDragLine = self.create_line(startx, starty,
             event.x,event.y, dash=(1,4))
 
-    def onRightClickPress(self,event):
-        for textThing in self.equations:
-            textThing.onRightClickPress(event)
+    def onRightClick(self,event):
+        # display the popup menu
+        try:
+            self.popup.tk_popup(event.x_root, event.y_root, 0)
+        finally:
+            # make sure to release the grab (Tk 8.0a1 only)
+            self.popup.grab_release()
 
     def onDoubleClick(self,event):
         for thing in self.allTextThings():
@@ -107,14 +122,14 @@ class Whiteboard(tk.Canvas, Backend):
     def addGUIEquivalence(self,var1,var2):
         if var1 is None or var2 is None:
             return
-        if self.dimensions[var1] == self.dimensions[var2]:
+        if self.varDimensionsAgree(var1,var2):
             self.addEquivalency([var1,var2])
 
             self.updateEquivalencyLines()
             for a in self.guiExpressions.values():
                 a.draw()
         else:
-            print "incompatible dimensions"
+            self.write("Incompatible dimensions")
 
     def updateEquivalencyLines(self):
         # This function has more functionality than it strictly needs to

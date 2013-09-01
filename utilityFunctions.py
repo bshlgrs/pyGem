@@ -26,8 +26,8 @@ def numberGuess(number):
             return "%d/%d"%(round(number*denominator),denominator)
 
     if prettyMuchAnInteger(number**2):
-        return u"sqrt(%d)"%(round(number**2))
-    return str(number)
+        return u"sqrt%d"%(round(number**2))
+    return "%.3f"%number
 
 def rewriteExpression(instr):
     def change(match):
@@ -37,7 +37,7 @@ def rewriteExpression(instr):
 
 def subscript(my_string):
     """
-    unicodes subscripts, written by Callum Ford
+    Unicodifies subscripts, written by Callum Ford.
     """
     final_list = []
     length = len(my_string)
@@ -71,6 +71,8 @@ def unicodify(instr,subscripting=True):
 
     if subscripting:
         instr = subscript(instr)
+
+ #   instr = instr.replace("omega",u"\u03C9")
 
     return instr
 

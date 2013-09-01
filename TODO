@@ -5,3 +5,8 @@ TODO
 - Make the code packageable
 
 - Add numerical values
+
+- You should be able to drag from an equation to a variable in an expression  and have that rewrite, which is just the opposite of the current way of doing it
+
+- Add differentiation
+

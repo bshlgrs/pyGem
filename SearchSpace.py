@@ -48,14 +48,24 @@ class SearchSpace(tk.Canvas):
                 anchor="nw", font=("Courier", 18, "bold"),fill="#033",
                             tags="search")
 
-        if event.char == '\r' and self.matches is not []:
-            equation = self.matches[0]
-            self.root.whiteboard.addGUIEquation(equation[1],equation[2],
-                                            equation[3])
+        if event.char == '\r':
+            if len(self.matches) > 0:
+                print self.matches
+                equation = self.matches[0]
+                print equation
+                self.root.whiteboard.addGUIEquation(equation[1],equation[2],
+                                                equation[3])
+            else:
+                lhs,rhs = string.split('=')
+                self.root.whiteboard.addGUIEquation(lhs,rhs,{})
+
 
     def addEquation(self,event):
         if not self.matches:
+            # If you want to not have arbitrary equations added, just make this
+            # return.
             return
+
         bBox = self.bbox("search")
         numberOfLines = len(self.matches) * 2 - 1
         linePressed = int(((event.y-bBox[1])*float(numberOfLines))/
@@ -63,6 +73,7 @@ class SearchSpace(tk.Canvas):
 
         if linePressed%2==0 and linePressed <= len(self.matches)*2:
             equation = self.matches[linePressed/2]
+            print equation
             self.root.whiteboard.addGUIEquation(equation[1],equation[2],
                                             equation[3])
 

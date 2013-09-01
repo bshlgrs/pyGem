@@ -1,11 +1,14 @@
 #!/usr/bin/python
 import Tkinter as tk
+from tkFileDialog import askopenfilename, asksaveasfilename
 from Backend import Backend
 from Whiteboard import Whiteboard
 from SearchSpace import SearchSpace
 
 from Tkinter import N, E, W, S
 from ttk import Button
+
+import pickle
 
 class Frontend(tk.Tk):
     def __init__(self):
@@ -49,6 +52,9 @@ class Frontend(tk.Tk):
         self.config(menu=menubar)
 
         fileMenu = tk.Menu(menubar)
+        fileMenu.add_command(label="New", command=self.newFile)
+        fileMenu.add_command(label="Open", command=self.openFile)
+        fileMenu.add_command(label="Save", command=self.saveFile)
         fileMenu.add_command(label="Quit", command=self.quit)
         menubar.add_cascade(label="File", menu=fileMenu)
 
@@ -59,7 +65,28 @@ class Frontend(tk.Tk):
                     command=self.whiteboard.decreaseTextSize)
         menubar.add_cascade(label="View", menu=viewMenu)
 
+    def newFile(self):
+        del self.whiteboard
+        self.whiteboard = Whiteboard(self,width=600, height=600, bg = "white",
+                            bd=1, relief='raised')
+        self.whiteboard.grid(row=0,column=0,rowspan=5,columnspan=1,
+                                sticky=W+E+N+S)
 
+    def openFile(self):
+        filename = askopenfilename(filetypes=
+                                [("allfiles","*"),("GEM files","*.wb")])
+        print filename
+        del self.whiteboard
+        thisFile = open(filename)
+
+        self.whiteboard = pickle.loads(thisFile.read())
+        thisFile.close()
+
+    def saveFile(self):
+        filename = asksaveasfilename()
+        thisFile = open(filename,'w')
+        thisFile.write(pickle.dumps(self.whiteboard))
+        thisFile.close()
 
 if __name__ == "__main__":
     app = Frontend()

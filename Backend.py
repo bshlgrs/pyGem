@@ -142,6 +142,13 @@ class Backend(object):
         self.checkUnits()
         self.updateExpressionsWithEquivalencies()
 
+    def varDimensionsAgree(self,var1,var2):
+        if self.dimensions[var1]==self.dimensions[var2]:
+            return True
+        if "?" in [self.dimensions[var1], self.dimensions[var2]]:
+            return True
+        return False
+
     def varsEqual(self,var1,var2):
         """
         Checks if var1 is known to be equal to var2.
@@ -166,9 +173,14 @@ class Backend(object):
     def checkUnits(self):
         for group in self.equivalencies:
             if len(group)>1: # I'm pretty sure this should always be true
+                groupDimension = ([self.dimensions[x] for x in group
+                                    if self.dimensions[x]!="?"]+["?"])[0]
+                if groupDimension == "?":
+                    continue
+                print "Group dimension is: ",groupDimension
                 for thing in group[1:]:
-                    assert (self.dimensions[group[0]] ==
-                                                 self.dimensions[thing])
+                    assert (groupDimension == self.dimensions[thing] or
+                            self.dimensions[thing] == "?")
 
     def findExpression(self,var,equation=None):
         """
@@ -250,6 +262,9 @@ class Backend(object):
 
         self.expressions[var] = newExpList
 
+    def tidyExpressions(self,var):
+        # I should probably write more of this
+        self.expressions[var] = list(set(self.expressions[var]))
 
     def rewriteUsingEquation(self,var,varToRemove,equation):
         """
@@ -257,6 +272,11 @@ class Backend(object):
         by solving equation for varToRemove, then substituting that
         into the expression for var.
         """
+
+        if var in equation.getVars():
+            self.write("You can't rewrite an expression with the "
+                    "original equation.")
+            return
 
         equat = equation.equation
         for var2 in self.equivalenciesOfVariable(varToRemove):
@@ -272,7 +292,8 @@ class Backend(object):
         for exp1 in self.expressions[var]:
             for exp2 in exps:
                 outexps.append(exp1.subs(varToRemove,exp2))
-        self.expressions[var] = [self.unifyVarsInExpression(x)
+        if outexps:
+            self.expressions[var] = [self.unifyVarsInExpression(x)
                         for x in outexps]
 
     def unifyVarsInExpression(self,exp):
@@ -303,7 +324,6 @@ class Backend(object):
         return None
 
     def getNumericalExpressions(self,variable):
-
         assert variable in self.expressions
 
         exps = self.expressions[variable]
@@ -319,6 +339,9 @@ class Backend(object):
         outexps = list(set(outexps))
 
         return outexps
+
+    def write(self,*args):
+        print " ".join(str(x) for x in args)
 
 
 if __name__ == '__main__':
