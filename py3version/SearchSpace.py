@@ -1,4 +1,4 @@
-import Tkinter as tk
+import tkinter as tk
 import EquationParser
 from utilityFunctions import rewriteExpression, unicodify
 
@@ -50,9 +50,9 @@ class SearchSpace(tk.Canvas):
 
         if event.char == '\r':
             if len(self.matches) > 0:
-                print self.matches
+             #   print self.matches
                 equation = self.matches[0]
-                print equation
+              #  print equation
                 self.root.whiteboard.addGUIEquation(equation[1],equation[2],
                                                 equation[3])
             else:
@@ -73,7 +73,7 @@ class SearchSpace(tk.Canvas):
 
         if linePressed%2==0 and linePressed <= len(self.matches)*2:
             equation = self.matches[linePressed/2]
-            print equation
+            print(equation)
             self.root.whiteboard.addGUIEquation(equation[1],equation[2],
                                             equation[3])
 

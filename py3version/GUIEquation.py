@@ -76,6 +76,17 @@ class GUIEquation(Equation):
                                                 clickedThing[1])
                 self.root.currentAction = "Equate"
 
+    def onRightClickPress(self,event):
+        if self.root.find_closest(event.x, event.y)[0] == self.opsTextID:
+            clickedThing = self.getClickedThing(event)
+
+            if clickedThing[0] == "Thing":
+                return (self,None)
+            elif clickedThing[0] == "Var":
+                return (self, clickedThing[1])
+        return None
+
+
     def onClickRelease(self,event):
         if self.root.currentAction == "Drag":
             if self.beingDragged:

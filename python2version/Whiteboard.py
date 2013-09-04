@@ -41,7 +41,7 @@ class Whiteboard(tk.Canvas, Backend):
         # create a menu
         self.popup = tk.Menu(root, tearoff=0)
         self.popup.add_command(label="Find expression",
-                command = lambda : findGUIExpression) # , command=next) etc...
+                command = self.findGUIExpressionRightClick)
         self.popup.add_command(label="Add numerical value")
         self.popup.add_separator()
         self.popup.add_command(label="Delete equation")
@@ -88,12 +88,21 @@ class Whiteboard(tk.Canvas, Backend):
             event.x,event.y, dash=(1,4))
 
     def onRightClick(self,event):
-        # display the popup menu
-        try:
-            self.popup.tk_popup(event.x_root, event.y_root, 0)
-        finally:
-            # make sure to release the grab (Tk 8.0a1 only)
-            self.popup.grab_release()
+        clickedEquation, clickedThing = None, None
+        for textThing in self.allTextThings():
+            a = textThing.onRightClickPress(event)
+            if a:
+                clickedEquation, clickedThing = a
+
+        self.dragStartVar = clickedThing
+
+        if clickedThing:
+            # display the popup menu
+            try:
+                self.popup.tk_popup(event.x_root, event.y_root, 0)
+            finally:
+                # make sure to release the grab (Tk 8.0a1 only)
+                self.popup.grab_release()
 
     def onDoubleClick(self,event):
         for thing in self.allTextThings():
@@ -163,6 +172,10 @@ class Whiteboard(tk.Canvas, Backend):
     def findGUIExpression(self, var, equation):
         self.findExpression(var,equation)
         self.guiExpressions[var] = GUIExpression(var,self)
+
+    def findGUIExpressionRightClick(self):
+        self.findGUIExpression(self.dragStartVar,
+                        self.findEquationWithVar(self.dragStartVar))
 
     def rewriteUsingEquation(self,var,varToRemove,equation):
         Backend.rewriteUsingEquation(self,var,varToRemove,equation)

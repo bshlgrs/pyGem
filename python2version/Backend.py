@@ -177,7 +177,7 @@ class Backend(object):
                                     if self.dimensions[x]!="?"]+["?"])[0]
                 if groupDimension == "?":
                     continue
-                print "Group dimension is: ",groupDimension
+               # print "Group dimension is: ",groupDimension
                 for thing in group[1:]:
                     assert (groupDimension == self.dimensions[thing] or
                             self.dimensions[thing] == "?")

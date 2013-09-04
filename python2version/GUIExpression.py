@@ -20,7 +20,10 @@ class GUIExpression(GUIEquation):
         self.beingDragged = False
 
     def __del__(self):
-        del self.root.expressions[self.var]
+        try:
+            del self.root.expressions[self.var]
+        except KeyError:
+            pass
         if self.varsTextID:
             self.root.delete(self.varsTextID)
             self.root.delete(self.opsTextID)
@@ -77,6 +80,9 @@ class GUIExpression(GUIEquation):
 
             else:
                 raise Exception("This shouldn't happen!")
+
+    def onRightClickPress(self,event):
+        return
 
     def onClickRelease(self,event):
         self.beingDragged = False
