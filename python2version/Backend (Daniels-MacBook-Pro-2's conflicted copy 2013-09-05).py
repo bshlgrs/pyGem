@@ -359,23 +359,28 @@ if __name__ == '__main__':
     a.addEquation(Equation("EP","m*g*h"),{"EP":"J","m":"kg",
                                         "g":"m*s^-2", "h":"m"})
 
+    a.addEquation(Equation("EP","m*g*h"),{"EP":"J","m":"kg",
+                                        "g":"m*s^-2", "h":"m"})
+
     a.addEquivalency(["m","m2"])
     a.addEquivalency(["EK","EP"])
 
     a.findExpression("v",a.equations[0])
 
+    a.show()
 
+    print
 
-    # print
+    a.rewriteUsingEquation("v","EK",a.equations[1])
 
-    # a.rewriteUsingEquation("v","EK",a.equations[1])
+    a.addNumericalValue("g",9.8)
 
-    # a.addNumericalValue("g",9.8)
+    a.show()
 
-    # a.show()
-
-    # print a.getNumericalExpressions("v")
+    print a.getNumericalExpressions("v")
 
     a.removeEquation(a.equations[0])
+
+    print
 
     a.show()

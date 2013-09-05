@@ -34,9 +34,14 @@ class Whiteboard(tk.Canvas, Backend):
         self.currentAction = None
 
         self.currentDragLine = None
-        self.dragStartVar = None
-        self.dragStartExpressionVar = None
-        self.dragStartCoords = None
+        # self.clickData["variable"] = None
+        # self.dragStartExpressionVar = None
+        # self.clickData["coords"] = None
+
+        self.clickData = {"clickedObject" : None, # Expression, Equation, etc
+                            "variable" : None, # or "EK" or whatever
+                            "coords" : None
+                            }
 
         # create a menu
         self.popup = tk.Menu(root, tearoff=0)
@@ -44,7 +49,8 @@ class Whiteboard(tk.Canvas, Backend):
                 command = self.findGUIExpressionRightClick)
         self.popup.add_command(label="Add numerical value")
         self.popup.add_separator()
-        self.popup.add_command(label="Delete equation")
+        self.popup.add_command(label="Delete equation",
+                    command= self.deleteEquation)
 
     def allTextThings(self):
         return self.equations + self.guiExpressions.values()
@@ -72,8 +78,8 @@ class Whiteboard(tk.Canvas, Backend):
                 textThing.onClickRelease(event)
 
             self.currentDragLine = None
-            self.dragStartVar = None
-            self.dragStartCoords = None
+            self.clickData["variable"] = None
+            self.clickData["coords"] = None
             self.dragStartExpressionVar = None
 
     def handleMotion(self,event):
@@ -81,9 +87,9 @@ class Whiteboard(tk.Canvas, Backend):
             textThing.handleMotion(event)
         if self.currentDragLine:
             self.delete(self.currentDragLine)
-        if not self.dragStartCoords:
+        if not self.clickData["coords"]:
             return
-        startx, starty = self.dragStartCoords
+        startx, starty = self.clickData["coords"]
         self.currentDragLine = self.create_line(startx, starty,
             event.x,event.y, dash=(1,4))
 
@@ -94,7 +100,7 @@ class Whiteboard(tk.Canvas, Backend):
             if a:
                 clickedEquation, clickedThing = a
 
-        self.dragStartVar = clickedThing
+        self.clickData["variable"] = clickedThing
 
         if clickedThing:
             # display the popup menu
@@ -174,8 +180,8 @@ class Whiteboard(tk.Canvas, Backend):
         self.guiExpressions[var] = GUIExpression(var,self)
 
     def findGUIExpressionRightClick(self):
-        self.findGUIExpression(self.dragStartVar,
-                        self.findEquationWithVar(self.dragStartVar))
+        self.findGUIExpression(self.clickData["variable"],
+                        self.findEquationWithVar(self.clickData["variable"]))
 
     def rewriteUsingEquation(self,var,varToRemove,equation):
         Backend.rewriteUsingEquation(self,var,varToRemove,equation)
@@ -184,6 +190,21 @@ class Whiteboard(tk.Canvas, Backend):
     def rewriteUsingExpression(self,var,varToRemove,varToUse):
         Backend.rewriteUsingExpression(self,var,varToRemove,varToUse)
         self.guiExpressions[var].draw()
+
+    def deleteEquation(self,eqToDelete = None):
+        print "deleting"
+
+        if eqToDelete is None:
+            eqToDelete = self.equations[self.findEquationIDOfVariable(
+                                self.clickData["variable"])]
+        print eqToDelete
+        self.removeEquation(eqToDelete)
+        del eqToDelete
+
+        self.updateEquivalencyLines()
+
+    def deleteExpression(self,expToDelete):
+        del self.guiExpressions[expToDelete.var]
 
     def write(self,*args):
         box = self.root.infoBox
