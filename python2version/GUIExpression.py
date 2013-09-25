@@ -87,9 +87,12 @@ class GUIExpression(GUIEquation):
     def onClickRelease(self,event):
         self.beingDragged = False
 
-        # if self.root.currentAction = "DragFromExp":
-        #     self.root.s
-
+        if self.root.currentAction == "DragFromExp":
+            if (self.root.find_closest(event.x, event.y)[0]
+                            == self.opsTextID):
+                self.root.rewriteUsingExpression(
+                            self.root.dragStartExpressionVar,
+                                            self.root.dragStartVar, self.var)
 
         if self.y<0:
             self.__del__()

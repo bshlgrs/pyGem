@@ -252,8 +252,9 @@ class Backend(object):
         by substituting the expression for varWhoseExpToUse into it.
         """
 
-        assert self.varsEqual(varToRemove,varWhoseExpToUse)
-
+        if not self.varsEqual(varToRemove,varWhoseExpToUse):
+            raise Exception(varToRemove,varWhoseExpToUse)
+            
         newExpList = []
 
         for exp in self.expressions[var]:
