@@ -88,7 +88,6 @@ class Backend(object):
 
     # Needs testing
     def removeEquation(self,equation):
-      # print [(x,id(x)) for x in self.equations]
         if equation in self.equations:
             self.equations.remove(equation)
 
@@ -99,8 +98,9 @@ class Backend(object):
 
             self.equivalencies = [x for x in self.equivalencies if len(x)>1]
 
+            equation.__del__()
+
         else:
-            print "remove failed", equation
             raise Exception("Tried to remove non-existent equation")
 
     def findEquationWithVar(self,var):
@@ -363,18 +363,6 @@ if __name__ == '__main__':
     a.addEquivalency(["EK","EP"])
 
     a.findExpression("v",a.equations[0])
-
-
-
-    # print
-
-    # a.rewriteUsingEquation("v","EK",a.equations[1])
-
-    # a.addNumericalValue("g",9.8)
-
-    # a.show()
-
-    # print a.getNumericalExpressions("v")
 
     a.removeEquation(a.equations[0])
 

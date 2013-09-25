@@ -1,24 +1,19 @@
 # GUIEquation.py
 
 from Equation import Equation
+from Draggable import Draggable
 import random
 import re
 from utilityFunctions import unicodify, splitStrings, censorUnicode
 
-class GUIEquation(Equation):
+class GUIEquation(Equation, Draggable):
     def __init__(self,lhs,rhs,root):
         Equation.__init__(self,lhs,rhs)
 
         self.root = root
 
-        self.x = 200
-
-        self.y = (200+70*self.getMyEqNo())%int(root.cget("height"))
-
-        self.dragX = 0
-        self.dragY = 0
-        self.beingDragged = False
-        self.beingEqualled = False
+        Draggable.__init__(self,200,
+                    (200+70*self.getMyEqNo()%int(root.cget("height"))))
 
         self.varsTextID = None
         self.opsTextID = None
@@ -33,6 +28,7 @@ class GUIEquation(Equation):
         return "GUIEquation %s"%censorUnicode(self.text)
 
     def __del__(self):
+        print "lolololololol"
         if self.varsTextID:
             self.root.delete(self.varsTextID)
             self.root.delete(self.opsTextID)
@@ -72,21 +68,22 @@ class GUIEquation(Equation):
                 self.root.write("%s :: "%clickedThing[1]
                              + self.root.dimensions[clickedThing[1]])
                 self.root.clickData["variable"] = clickedThing[1]
-                self.root.clickData["coords"] =self.getActualCanvasPositionOfVar(
-                                                clickedThing[1])
-                self.root.currentAction = "Equate"
+                self.root.clickData["coords"] = (
+                        self.getActualCanvasPositionOfVar(
+                                                clickedThing[1]))
+                self.root.currentAction = "DragFromEquationVar"
 
     def onRightClickPress(self,event):
         if self.root.find_closest(event.x, event.y)[0] == self.opsTextID:
             clickedThing = self.getClickedThing(event)
 
             if clickedThing[0] == "Thing":
-                self.clickData["variable"] = None
-                self.clickData["clickedObject"] = self
+                self.root.clickData["variable"] = None
+                self.root.clickData["clickedObject"] = self
                 return (self,None)
             elif clickedThing[0] == "Var":
-                self.clickData["variable"] = None
-                self.clickData["clickedObject"] = self
+                self.root.clickData["variable"] = clickedThing[1]
+                self.root.clickData["clickedObject"] = self
                 return (self, clickedThing[1])
         return None
 
@@ -99,7 +96,7 @@ class GUIEquation(Equation):
                     self.root.deleteEquation(self)
                     return
 
-        elif self.root.currentAction == "Equate":
+        elif self.root.currentAction == "DragFromEquationVar":
             if self.beingEqualled:
                 self.beingEqualled = False
 

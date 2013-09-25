@@ -1,15 +1,16 @@
 import re
 from utilityFunctions import rewriteExpression, unicodify, splitStrings
 from GUIEquation import GUIEquation
+from Draggable import Draggable
 
-class GUIExpression(GUIEquation):
+class GUIExpression(GUIEquation,Draggable):
     def __init__(self,var,root,pos=None):
         self.var = var
         self.root = root
         if pos:
-            self.x,self.y = pos
+            Draggable.__init__(self,pos[0],pos[1])
         else:
-            self.x,self.y = 300,100+(40*len(root.expressions))%300
+            Draggable.__init__(self,300,100+(40*len(root.expressions))%300)
 
         self.varsTextID = None
         self.opsTextID = None
@@ -17,10 +18,6 @@ class GUIExpression(GUIEquation):
         self.tagString = "".join(chr(ord(x)+17) for x in str(id(self)))
 
         self.draw()
-
-        self.dragX = 0
-        self.dragY = 0
-        self.beingDragged = False
 
     def __del__(self):
         if self.varsTextID:

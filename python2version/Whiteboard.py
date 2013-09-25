@@ -1,6 +1,5 @@
 # Whiteboard.py
 
-
 import Tkinter as tk
 from Backend import Backend
 from GUIEquation import GUIEquation
@@ -30,7 +29,7 @@ class Whiteboard(tk.Canvas, Backend):
 
         self.guiExpressions = {}
 
-        # currentAction can be None, "Drag", "Equate", "DragFromExp"
+        # currentAction can be None, "Drag", "DragFromEquationVar", "DragFromExp"
         self.currentAction = None
 
         self.currentDragLine = None
@@ -43,13 +42,18 @@ class Whiteboard(tk.Canvas, Backend):
                             "coords" : None
                             }
 
-        # create a menu
-        self.popup = tk.Menu(root, tearoff=0)
-        self.popup.add_command(label="Find expression",
+        # This is the menu when you click on a variable in an equation
+        self.eqVarPopup = tk.Menu(root, tearoff=0)
+        self.eqVarPopup.add_command(label="Find expression",
                 command = self.findGUIExpressionRightClick)
-        self.popup.add_command(label="Add numerical value")
-        self.popup.add_separator()
-        self.popup.add_command(label="Delete equation",
+        self.eqVarPopup.add_command(label="Add numerical value")
+        self.eqVarPopup.add_separator()
+        self.eqVarPopup.add_command(label="Delete equation",
+                    command= self.deleteEquation)
+
+        # This is the menu when you click on something else in an equation
+        self.eqOtherPopup = tk.Menu(root, tearoff=0)
+        self.eqOtherPopup.add_command(label="Delete equation",
                     command= self.deleteEquation)
 
     def allTextThings(self):
@@ -70,7 +74,7 @@ class Whiteboard(tk.Canvas, Backend):
                 textThing.onClickRelease(event)
 
 
-        if self.currentAction in ["DragFromExp","Equate"]:
+        if self.currentAction in ["DragFromExp","DragFromEquationVar"]:
             if self.currentDragLine:
                 self.delete(self.currentDragLine)
 
@@ -100,15 +104,18 @@ class Whiteboard(tk.Canvas, Backend):
             if a:
                 clickedEquation, clickedThing = a
 
+        self.clickData["clickedObject"] = clickedEquation
         self.clickData["variable"] = clickedThing
 
-        if clickedThing:
-            # display the popup menu
-            try:
-                self.popup.tk_popup(event.x_root, event.y_root, 0)
-            finally:
-                # make sure to release the grab (Tk 8.0a1 only)
-                self.popup.grab_release()
+        try:
+            if clickedThing:
+                self.eqVarPopup.tk_popup(event.x_root, event.y_root, 0)
+            else:
+                self.eqOtherPopup.tk_popup(event.x_root, event.y_root, 0)
+        finally:
+            # make sure to release the grab (Tk 8.0a1 only)
+            self.eqVarPopup.grab_release()
+            self.eqOtherPopup.grab_release()
 
     def onDoubleClick(self,event):
         for thing in self.allTextThings():
@@ -193,13 +200,10 @@ class Whiteboard(tk.Canvas, Backend):
 
     def deleteEquation(self,eqToDelete = None):
         print "deleting"
-
         if eqToDelete is None:
-            eqToDelete = self.equations[self.findEquationIDOfVariable(
-                                self.clickData["variable"])]
-        print eqToDelete
+            eqToDelete = self.clickData["clickedObject"]
+
         self.removeEquation(eqToDelete)
-        del eqToDelete
 
         self.updateEquivalencyLines()
 
