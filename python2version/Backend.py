@@ -96,9 +96,12 @@ class Backend(object):
                     if var in partition:
                         partition.remove(var)
 
-            for partition in self.equivalencies:
-                if len(partition)==1:
-                    self.equivalencies.remove(partition)
+            self.equivalencies = [x for x in self.equivalencies if len(x)>1]
+
+            equation.__del__()
+
+        else:
+            raise Exception("Tried to remove non-existent equation")
 
     def findEquationWithVar(self,var):
         """
@@ -129,7 +132,12 @@ class Backend(object):
             variables.
         """
 
-        newgroup = list(newEquivalencies)
+        newgroup = list(set(newEquivalencies))
+
+        # If the user tried to set x equal to itself, return.
+        if len(newgroup) == 1:
+            return
+
         outlist = [list(x) for x in self.equivalencies] # this is a deep copy
         for group in outlist:
             if any(x in newgroup for x in group):
@@ -352,22 +360,11 @@ if __name__ == '__main__':
     a.addEquation(Equation("EP","m*g*h"),{"EP":"J","m":"kg",
                                         "g":"m*s^-2", "h":"m"})
 
-    a.addEquation(Equation("EP","m*g*h"),{"EP":"J","m":"kg",
-                                        "g":"m*s^-2", "h":"m"})
-
     a.addEquivalency(["m","m2"])
     a.addEquivalency(["EK","EP"])
 
     a.findExpression("v",a.equations[0])
 
-    a.show()
-
-    print
-
-    a.rewriteUsingEquation("v","EK",a.equations[1])
-
-    a.addNumericalValue("g",9.8)
+    a.removeEquation(a.equations[0])
 
     a.show()
-
-    print a.getNumericalExpressions("v")

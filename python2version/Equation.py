@@ -1,7 +1,7 @@
 import sympy as s
 from sympy.solvers import solve
 import re
-from utilityFunctions import rewriteExpression, unicodify
+from utilityFunctions import rewriteExpression, unicodify, censorUnicode
 
 class Equation():
     """
@@ -18,7 +18,7 @@ class Equation():
         self.text = unicodify(rewriteExpression(lhs + "=" + rhs))
 
     def __repr__(self):
-        return self.text
+        return "Equation %s"%censorUnicode(self.text)
 
     def getVars(self):
         return [x.name for x in self.equation.atoms(s.Symbol)]

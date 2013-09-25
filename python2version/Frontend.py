@@ -8,8 +8,6 @@ from SearchSpace import SearchSpace
 from Tkinter import N, E, W, S
 from ttk import Button
 
-import pickle
-
 class Frontend(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)

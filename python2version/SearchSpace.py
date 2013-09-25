@@ -1,6 +1,7 @@
 import Tkinter as tk
 import EquationParser
 from utilityFunctions import rewriteExpression, unicodify
+#from sympy import SympifyError
 
 class SearchSpace(tk.Canvas):
     def __init__(self, root, *args, **kwargs):
@@ -56,14 +57,18 @@ class SearchSpace(tk.Canvas):
                 self.root.whiteboard.addGUIEquation(equation[1],equation[2],
                                                 equation[3])
             else:
-                lhs,rhs = string.split('=')
-                self.root.whiteboard.addGUIEquation(lhs,rhs,{})
-
+                try:
+                    lhs,rhs = string.split('=')
+                except ValueError:
+                    self.root.whiteboard.write("Equation could not be parsed.")
+                    return
+                try:
+                    self.root.whiteboard.addGUIEquation(lhs,rhs,{})
+                except Exception as e:
+                    self.root.whiteboard.write("Equation could not be parsed.")
 
     def addEquation(self,event):
         if not self.matches:
-            # If you want to not have arbitrary equations added, just make this
-            # return.
             return
 
         bBox = self.bbox("search")

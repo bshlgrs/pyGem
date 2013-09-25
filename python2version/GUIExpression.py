@@ -1,12 +1,16 @@
 import re
 from utilityFunctions import rewriteExpression, unicodify, splitStrings
 from GUIEquation import GUIEquation
+from Draggable import Draggable
 
-class GUIExpression(GUIEquation):
-    def __init__(self,var,root):
+class GUIExpression(GUIEquation,Draggable):
+    def __init__(self,var,root,pos=None):
         self.var = var
         self.root = root
-        self.x,self.y = 300,100+(40*len(root.expressions))%300
+        if pos:
+            Draggable.__init__(self,pos[0],pos[1])
+        else:
+            Draggable.__init__(self,300,100+(40*len(root.expressions))%300)
 
         self.varsTextID = None
         self.opsTextID = None
@@ -15,15 +19,7 @@ class GUIExpression(GUIEquation):
 
         self.draw()
 
-        self.dragX = 0
-        self.dragY = 0
-        self.beingDragged = False
-
     def __del__(self):
-        try:
-            del self.root.expressions[self.var]
-        except KeyError:
-            pass
         if self.varsTextID:
             self.root.delete(self.varsTextID)
             self.root.delete(self.opsTextID)
@@ -73,9 +69,9 @@ class GUIExpression(GUIEquation):
                 self.root.currentAction = "Drag"
             elif clickedThing[0]=="Var":
                 self.root.currentAction = "DragFromExp"
-                self.root.dragStartVar = clickedThing[1]
+                self.root.clickData["variable"] = clickedThing[1]
                 self.root.dragStartExpressionVar = self.var
-                self.root.dragStartCoords = \
+                self.root.clickData["coords"] = \
                             self.getActualCanvasPositionOfVar(clickedThing[1])
 
             else:
@@ -95,7 +91,7 @@ class GUIExpression(GUIEquation):
                                             self.root.dragStartVar, self.var)
 
         if self.y<0:
-            self.__del__()
+            self.root.deleteExpression(self)
 
     def handleMotion(self,event):
         if self.beingDragged:
