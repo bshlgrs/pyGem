@@ -4,6 +4,7 @@ import Tkinter as tk
 from Backend import Backend
 from GUIEquation import GUIEquation
 from GUIExpression import GUIExpression
+from GUINumericalValue import GUINumericalValue
 from math import sqrt
 from time import time
 
@@ -28,6 +29,8 @@ class Whiteboard(tk.Canvas, Backend):
         self.equivalenceLines = []
 
         self.guiExpressions = {}
+
+        self.numbers = []
 
         # currentAction can be None, "Drag", "DragFromEquationVar", "DragFromExp"
         self.currentAction = None
@@ -57,7 +60,8 @@ class Whiteboard(tk.Canvas, Backend):
                     command= self.deleteEquation)
 
     def allTextThings(self):
-        return self.equations + self.guiExpressions.values()
+        return (self.equations + self.guiExpressions.values()
+                            + self.numbers)
 
     def addGUIEquation(self,lhs,rhs,units):
         self.addEquation(GUIEquation(lhs,rhs,self),units)
@@ -206,6 +210,10 @@ class Whiteboard(tk.Canvas, Backend):
         self.removeEquation(eqToDelete)
 
         self.updateEquivalencyLines()
+
+    def createNumber(self,number):
+        newNumber = GUINumericalValue(self,number)
+        self.numbers.append(newNumber)
 
     def deleteExpression(self,expToDelete):
         del self.guiExpressions[expToDelete.var]

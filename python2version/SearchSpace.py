@@ -50,19 +50,20 @@ class SearchSpace(tk.Canvas):
                             tags="search")
 
         if event.char == '\r':
-            if len(self.matches) > 0:
-             #   print self.matches
+            if len(self.matches) > 0: # If they searched for something
                 equation = self.matches[0]
-              #  print equation
                 self.root.whiteboard.addGUIEquation(equation[1],equation[2],
                                                 equation[3])
             else:
-                try:
-                    lhs,rhs = string.split('=')
-                except ValueError:
-                    self.root.whiteboard.write("Equation could not be parsed.")
+                try: # Maybe it's a number
+                    val = float(string)
+                    self.root.whiteboard.createNumber(val)
                     return
-                try:
+                except ValueError:
+                    pass
+                    
+                try: # Maybe it's a custom equation
+                    lhs,rhs = string.split('=')
                     self.root.whiteboard.addGUIEquation(lhs,rhs,{})
                 except Exception as e:
                     self.root.whiteboard.write("Equation could not be parsed.")
