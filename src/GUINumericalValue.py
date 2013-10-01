@@ -6,6 +6,8 @@ class GUINumericalValue(Draggable):
         Draggable.__init__(self,100+150*random(),100+(40*len(root.expressions)*random())%300)
 
         self.root = root
+        self.value = value
+        self.connectedVar = None
 
         if uncertainty is not None:
             self.valString= "%s +/- %s"%(str(value),str(uncertainty))
@@ -35,7 +37,8 @@ class GUINumericalValue(Draggable):
         self.beingDragged = False
 
         if (self.root.find_closest(event.x, event.y)[0] == self.textID):
-            print "Oooh, that was me!"
+            self.root.addNumericalValueToGUI(self.root.clickData["variable"],self.value)
+            self.connectedVar = self.root.clickData["variable"]
 
     def handleMotion(self,event):
         if self.beingDragged:
@@ -46,3 +49,8 @@ class GUINumericalValue(Draggable):
             self.dragY = event.y
             self.x += delta_x
             self.y += delta_y
+            self.root.updateEquivalencyLines()
+
+    def getActualCanvasPosition(self):
+        bBox = self.root.bbox(self.textID)
+        return (bBox[0]+bBox[2])/2, (bBox[1]+bBox[3])/2

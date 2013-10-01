@@ -186,6 +186,14 @@ class Whiteboard(tk.Canvas, Backend):
                             self.findVariablePosition(var2),16,16,dash=(4,4))
                     self.equivalenceLines.append(newline)
 
+        for numberVal in self.numbers:
+            print numberVal, numberVal.connectedVar
+            if numberVal.connectedVar:
+                pos1 = self.findVariablePosition(numberVal.connectedVar)
+                pos2 = numberVal.getActualCanvasPosition()
+                newline = drawShrunkLines(pos1,pos2,16,16,dash=(4,4))
+                self.equivalenceLines.append(newline)
+
     def findGUIExpression(self, var, equation):
         self.findExpression(var,equation)
         self.guiExpressions[var] = GUIExpression(var,self)
@@ -214,6 +222,13 @@ class Whiteboard(tk.Canvas, Backend):
     def createNumber(self,number):
         newNumber = GUINumericalValue(self,number)
         self.numbers.append(newNumber)
+        self.updateEquivalencyLines()
+
+    def addNumericalValueToGUI(self,variable,value):
+        self.addNumericalValue(variable,value)
+        for exp in self.guiExpressions:
+            self.guiExpressions[exp].draw()
+        self.updateEquivalencyLines()
 
     def deleteExpression(self,expToDelete):
         del self.guiExpressions[expToDelete.var]

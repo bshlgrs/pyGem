@@ -1,12 +1,16 @@
 import re
 from utilityFunctions import rewriteExpression, unicodify, splitStrings
 from GUIEquation import GUIEquation
+from Draggable import Draggable
 
-class GUIExpression(GUIEquation):
-    def __init__(self,var,root):
+class GUIExpression(GUIEquation,Draggable):
+    def __init__(self,var,root,pos=None):
         self.var = var
         self.root = root
-        self.x,self.y = 300,100+(40*len(root.expressions))%300
+        if pos:
+            Draggable.__init__(self,pos[0],pos[1])
+        else:
+            Draggable.__init__(self,300,100+(40*len(root.expressions))%300)
 
         self.varsTextID = None
         self.opsTextID = None
@@ -15,15 +19,7 @@ class GUIExpression(GUIEquation):
 
         self.draw()
 
-        self.dragX = 0
-        self.dragY = 0
-        self.beingDragged = False
-
     def __del__(self):
-        try:
-            del self.root.expressions[self.var]
-        except KeyError:
-            pass
         if self.varsTextID:
             self.root.delete(self.varsTextID)
             self.root.delete(self.opsTextID)
@@ -49,16 +45,25 @@ class GUIExpression(GUIEquation):
                     font = ("Courier", self.root.textSize-2, "normal"))
 
     def expString(self):
-        exps = self.root.expressions[self.var]
-        if len(exps) == 1:
-            return exps[0].__repr__()
-        if len(exps) == 2 and exps[0]+exps[1]==0:
-            a = exps[0].__repr__()
-            b = exps[1].__repr__()
+        expString1 = self.makeString(self.root.expressions[self.var])
+        numExpsString = self.makeString(self.root.getNumericalExpressions(self.var))
+        if expString1 == numExpsString:
+            return expString1
+        else:
+            return "%s=%s"%(expString1,numExpsString)
+
+    def makeString(self,inlist):
+        if len(inlist) == 1:
+            return inlist[0].__repr__()
+        if len(inlist) == 2 and inlist[0]+inlist[1]==0:
+            a = inlist[0].__repr__()
+            b = inlist[1].__repr__()
+            # Screw it, no plus/minus (which is u"\u00B1")
             if len(a)>len(b):
-                return "\u00B1"+b
-            return "\u00B1("+a+")"
-        return exps.__repr__()
+                return b
+            return a
+
+        return inlist.__repr__()
 
     def onClickPress(self,event):
         if (self.root.find_closest(event.x, event.y)[0]
@@ -73,9 +78,9 @@ class GUIExpression(GUIEquation):
                 self.root.currentAction = "Drag"
             elif clickedThing[0]=="Var":
                 self.root.currentAction = "DragFromExp"
-                self.root.dragStartVar = clickedThing[1]
+                self.root.clickData["variable"] = clickedThing[1]
                 self.root.dragStartExpressionVar = self.var
-                self.root.dragStartCoords = \
+                self.root.clickData["coords"] = \
                             self.getActualCanvasPositionOfVar(clickedThing[1])
 
             else:
@@ -87,12 +92,15 @@ class GUIExpression(GUIEquation):
     def onClickRelease(self,event):
         self.beingDragged = False
 
-        # if self.root.currentAction = "DragFromExp":
-        #     self.root.s
-
+        if self.root.currentAction == "DragFromExp":
+            if (self.root.find_closest(event.x, event.y)[0] == self.opsTextID) \
+                            and self.root.dragStartExpressionVar != self.var:
+                self.root.rewriteUsingExpression(
+                            self.root.dragStartExpressionVar,
+                                            self.root.dragStartVar, self.var)
 
         if self.y<0:
-            self.__del__()
+            self.root.deleteExpression(self)
 
     def handleMotion(self,event):
         if self.beingDragged:
