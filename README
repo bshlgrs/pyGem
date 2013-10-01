@@ -5,6 +5,10 @@ aspires to assist in calculations in the kinds of physics problems which
 involve writing down equations, equating variables, and solving for
 variables.
 
+INSTALLATION
+
+The only dependency of this program is Sympy, a Python library I use for symbolic manipulation. Sympy is fairly easy to install.
+
 HOW TO USE
 
 The main program is in src/main.py.
