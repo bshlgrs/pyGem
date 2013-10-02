@@ -6,6 +6,7 @@ from sympy import pretty, S
 from utilityFunctions import replaceName
 from sympy.solvers import solve
 from sympy import Symbol
+from uncertainties import ufloat
 
 class Backend(object):
     """The backend for my graphical equation manipulator.

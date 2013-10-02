@@ -30,7 +30,7 @@ class Whiteboard(tk.Canvas, Backend):
 
         self.guiExpressions = {}
 
-        self.numbers = []
+        self.numbers = {}
 
         # currentAction can be None, "Drag", "DragFromEquationVar", "DragFromExp"
         self.currentAction = None
@@ -61,7 +61,7 @@ class Whiteboard(tk.Canvas, Backend):
 
     def allTextThings(self):
         return (self.equations + self.guiExpressions.values()
-                            + self.numbers)
+                            + self.numbers.keys())
 
     def addGUIEquation(self,lhs,rhs,units):
         self.addEquation(GUIEquation(lhs,rhs,self),units)
@@ -187,9 +187,8 @@ class Whiteboard(tk.Canvas, Backend):
                     self.equivalenceLines.append(newline)
 
         for numberVal in self.numbers:
-            print numberVal, numberVal.connectedVar
-            if numberVal.connectedVar:
-                pos1 = self.findVariablePosition(numberVal.connectedVar)
+            if self.numbers[numberVal]:
+                pos1 = self.findVariablePosition(self.numbers[numberVal])
                 pos2 = numberVal.getActualCanvasPosition()
                 newline = drawShrunkLines(pos1,pos2,16,16,dash=(4,4))
                 self.equivalenceLines.append(newline)
@@ -221,14 +220,18 @@ class Whiteboard(tk.Canvas, Backend):
 
     def createNumber(self,number):
         newNumber = GUINumericalValue(self,number)
-        self.numbers.append(newNumber)
+        self.numbers[newNumber]=None
         self.updateEquivalencyLines()
 
-    def addNumericalValueToGUI(self,variable,value):
-        self.addNumericalValue(variable,value)
+    def addNumericalValueToGUI(self,variable,number):
+        self.addNumericalValue(variable,number.value)
+        for number2 in self.numbers:
+            if self.numbers[number2] == variable:
+                self.numbers[number2] = None
+        self.numbers[number]=variable
+        self.updateEquivalencyLines()
         for exp in self.guiExpressions:
             self.guiExpressions[exp].draw()
-        self.updateEquivalencyLines()
 
     def deleteExpression(self,expToDelete):
         del self.guiExpressions[expToDelete.var]

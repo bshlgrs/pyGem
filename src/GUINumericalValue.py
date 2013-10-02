@@ -7,7 +7,6 @@ class GUINumericalValue(Draggable):
 
         self.root = root
         self.value = value
-        self.connectedVar = None
 
         if uncertainty is not None:
             self.valString= "%s +/- %s"%(str(value),str(uncertainty))
@@ -17,6 +16,10 @@ class GUINumericalValue(Draggable):
         self.textID = None
 
         self.draw()
+
+    def __del__(self):
+        if self.varsTextID:
+            self.root.delete(self.textID)
 
     def draw(self):
         if self.textID is None:
@@ -37,8 +40,10 @@ class GUINumericalValue(Draggable):
         self.beingDragged = False
 
         if (self.root.find_closest(event.x, event.y)[0] == self.textID):
-            self.root.addNumericalValueToGUI(self.root.clickData["variable"],self.value)
-            self.connectedVar = self.root.clickData["variable"]
+            if self.root.clickData["variable"]:
+                self.root.addNumericalValueToGUI(self.root.clickData["variable"],self)
+
+    
 
     def handleMotion(self,event):
         if self.beingDragged:

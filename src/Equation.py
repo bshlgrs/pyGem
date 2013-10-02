@@ -46,6 +46,7 @@ class Equation():
             if name in currentVarNumbers:
                 currentVarNumbers[name]+=1
                 newName = name+str(currentVarNumbers[name])
+               # newNameVar = s.Symbol(newName,positive=True)
                 self.equation = self.equation.subs(name, newName)
                 self.text = replaceString(self.text,name,newName)
                 if name in newUnits:
