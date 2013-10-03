@@ -66,6 +66,13 @@ class SearchSpace(tk.Canvas):
                 except ValueError:
                     pass
 
+                try: # Maybe it's a number with uncertainty
+                    val, sigma = map(float,string.split("+-"))
+                    self.root.whiteboard.createNumber(val,sigma)
+                    return
+                except Exception as e:
+                    print e
+
                 try: # Maybe it's a custom equation
                     lhs, rhs = string.split('=')
                     self.root.whiteboard.addGUIEquation(lhs, rhs, {})

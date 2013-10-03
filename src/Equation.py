@@ -20,6 +20,9 @@ class Equation():
     def __repr__(self):
         return "Equation %s"%censorUnicode(self.text)
 
+    def __del__(self):
+        pass
+
     def getVars(self):
         return [x.name for x in self.equation.atoms(s.Symbol)]
 
@@ -46,7 +49,7 @@ class Equation():
             if name in currentVarNumbers:
                 currentVarNumbers[name]+=1
                 newName = name+str(currentVarNumbers[name])
-               # newNameVar = s.Symbol(newName,positive=True)
+                newNameVar = s.Symbol(newName,positive=True)
                 self.equation = self.equation.subs(name, newName)
                 self.text = replaceString(self.text,name,newName)
                 if name in newUnits:
@@ -54,6 +57,9 @@ class Equation():
                 else:
                     renamedUnits[newName] = "?"
             else:
+                newVar = s.Symbol(name,positive=True)
+             #   self.equation = self.equation.subs(name, newVar)
+
                 currentVarNumbers[name]=1
                 if name in newUnits:
                     renamedUnits[name] = newUnits[name]
@@ -67,20 +73,4 @@ class Equation():
             return solve(self.equation,s.S(variable))
         else:
             return None
-
-
-if __name__ == '__main__':
-    a = Equation("KE","0.5*m*v**2")
-
-    print a
-
-    currentVarNumbers = {"m":1}
-
-    a.rename(currentVarNumbers)
-
-    print a, currentVarNumbers
-
-    s.pprint(a.solve("v"))
-
-
 

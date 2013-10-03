@@ -47,11 +47,11 @@ class GUIEquation(Equation, Draggable):
         self.varsTextID = self.root.create_text((self.x,self.y),
             text =unicodify(self.varsString),
                  fill = "#066",
-                    font = ("Courier", self.root.textSize, "bold"))
+                    font = ("Courier", self.root.textSize+2, "bold"))
         self.opsTextID = self.root.create_text((self.x,self.y),
             text =unicodify(self.opsString), tags = ("Draggable", "Equation",
                 self.tagString),
-                    font = ("Courier", self.root.textSize, "normal"))
+                    font = ("Courier", self.root.textSize+2, "normal"))
 
     def onClickPress(self,event):
         if self.root.find_closest(event.x, event.y)[0] == self.opsTextID:

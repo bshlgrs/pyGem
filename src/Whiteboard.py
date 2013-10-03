@@ -218,13 +218,13 @@ class Whiteboard(tk.Canvas, Backend):
 
         self.updateEquivalencyLines()
 
-    def createNumber(self,number):
-        newNumber = GUINumericalValue(self,number)
+    def createNumber(self,number,sigma=0):
+        newNumber = GUINumericalValue(self,number,sigma)
         self.numbers[newNumber]=None
         self.updateEquivalencyLines()
 
     def addNumericalValueToGUI(self,variable,number):
-        self.addNumericalValue(variable,number.value)
+        self.addNumericalValue(variable,number.value,number.sigma)
         for number2 in self.numbers:
             if self.numbers[number2] == variable:
                 self.numbers[number2] = None

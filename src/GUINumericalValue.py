@@ -1,32 +1,35 @@
 from Draggable import Draggable
 from random import random
+from utilityFunctions import unicodify
 
 class GUINumericalValue(Draggable):
-    def __init__(self,root,value,uncertainty=None):
+    def __init__(self,root,value,sigma=None):
         Draggable.__init__(self,100+150*random(),100+(40*len(root.expressions)*random())%300)
 
         self.root = root
         self.value = value
 
-        if uncertainty is not None:
-            self.valString= "%s +/- %s"%(str(value),str(uncertainty))
+        if sigma is not None and sigma != 0:
+            self.valString= "%s+/-%s"%(str(value),str(sigma))
         else:
             self.valString = str(value)
+
+        self.sigma = sigma
 
         self.textID = None
 
         self.draw()
 
     def __del__(self):
-        if self.varsTextID:
+        if self.textID:
             self.root.delete(self.textID)
 
     def draw(self):
         if self.textID is None:
             self.textID = self.root.create_text((self.x,self.y),
-                text = self.valString,
+                text = unicodify(self.valString),
                     fill = "#C00633", tags = "Draggable",
-                        font = ("Courier", self.root.textSize-2, "bold"))
+                        font = ("Courier", self.root.textSize-4, "bold"))
 
     def onClickPress(self,event):
         if (self.root.find_closest(event.x, event.y)[0]

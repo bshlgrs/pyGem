@@ -50,11 +50,11 @@ class GUIExpression(GUIEquation,Draggable):
         if expString1 == numExpsString:
             return expString1
         else:
-            return "%s=%s"%(expString1,numExpsString)
+            return "%s=%s"%(expString1,unicodify(numExpsString))
 
     def makeString(self,inlist):
         if len(inlist) == 1:
-            return inlist[0].__repr__()
+            return str(inlist[0])
         if len(inlist) == 2 and inlist[0]+inlist[1]==0:
             a = inlist[0].__repr__()
             b = inlist[1].__repr__()

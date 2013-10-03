@@ -3,6 +3,9 @@ import re
 from sympy import S
 
 def numberPrint(number):
+    #TODO: Reconsider this:
+    return "%4f"%number
+    
     if abs(round(number)-number) < 0.00001:
         return "%d"%number
     if abs(round(number*2)-number*2) < 0.00001:
@@ -58,6 +61,13 @@ def subscript(my_string):
     return "".join(final_list)
 
 def unicodify(instr,subscripting=True):
+
+    if subscripting:
+        try:
+            instr = subscript(instr)
+        except Exception:
+            print "Gah, you should fix the subscripter..."
+
     instr = instr.replace("sqrt",u"\u221A").replace("**2",u"\u00B2")
     def change(match):
         thing = match.group(0)
@@ -66,13 +76,16 @@ def unicodify(instr,subscripting=True):
         return thing
     instr = re.sub("[0-9]+/[0-9]+[*]",change,instr)
 
+    instr = instr.replace("+/-",u"\u00B1")
+
     def change2(match):
         thing = match.group(0)
 
-    if subscripting:
-        instr = subscript(instr)
+    
 
  #   instr = instr.replace("omega",u"\u03C9")
+
+    
 
     return instr
 

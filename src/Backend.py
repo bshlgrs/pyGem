@@ -2,11 +2,13 @@
 
 from Dimensions import Dimensions
 from Equation import Equation
-from sympy import pretty, S
+from sympy import pretty, S, preorder_traversal
 from utilityFunctions import replaceName
 from sympy.solvers import solve
 from sympy import Symbol
+from sympy.core.numbers import Number
 from uncertainties import ufloat
+from Uncertainty_calculations import findUncertainty
 
 class Backend(object):
     """The backend for my graphical equation manipulator.
@@ -178,7 +180,6 @@ class Backend(object):
                 return out
         return []
 
-
     def checkUnits(self):
         for group in self.equivalencies:
             if len(group)>1: # I'm pretty sure this should always be true
@@ -210,11 +211,11 @@ class Backend(object):
             exps = equation.solve(var)
             if exps:
                 self.expressions[var] = exps
+                self.tidyExpressions(var)
             else:
                 raise Exception("No solution found")
             return
         raise Exception("Variable not in expression")
-
 
     def updateExpressionsWithEquivalencies(self):
         """
@@ -228,6 +229,7 @@ class Backend(object):
         for var in self.expressions:
             self.expressions[var] = [self.unifyVarsInExpression(x) for
                                     x in self.expressions[var]]
+            self.tidyExpressions(var)
 
     def rotateVariableInExpression(self,varToChange,oldName):
         """
@@ -271,10 +273,32 @@ class Backend(object):
                 newExpList.append(exp.subs(varToRemove,exp2))
 
         self.expressions[var] = newExpList
+        self.tidyExpressions(var)
 
     def tidyExpressions(self,var):
+        """This function tidies the expressions for a variable. It removes
+        duplicate solutions, and solutions where one is the negative of another.
+        """
+        def exprIsPositive(expr):
+            '''This function is *incredibly* sketchy. It sometimes determines 
+            whether an expression is positive or negative. It's true for "x*y" 
+            and false for "-x*y".'''
+        
+            for a in preorder_traversal(expr):
+                if issubclass(a.func,Number):
+                    if a<0:
+                        return False
+
         # I should probably write more of this
-        self.expressions[var] = list(set(self.expressions[var]))
+        outlist = []
+        for expr in self.expressions[var]:
+            if expr not in outlist:
+                if -expr in self.expressions[var]:
+                    outlist.append((-expr,expr)[exprIsPositive(expr)])
+                else:
+                    outlist.append(expr)
+
+        self.expressions[var] = list(set(outlist))
 
     def rewriteUsingEquation(self,var,varToRemove,equation):
         """
@@ -306,6 +330,8 @@ class Backend(object):
             self.expressions[var] = [self.unifyVarsInExpression(x)
                         for x in outexps]
 
+            self.tidyExpressions(var)
+
     def unifyVarsInExpression(self,exp):
         varNameList = [x.name for x in exp.atoms(Symbol)]
         for var in varNameList:
@@ -314,22 +340,22 @@ class Backend(object):
         exp.simplify()
         return exp
 
-    def addNumericalValue(self,variable,value):
+    def addNumericalValue(self,variable,value,sigma=0):
         others = self.equivalenciesOfVariable(variable)
         for other in others:
             if other in self.numericalValues:
                 raise Exception("Inconsistent numerical value added")
 
-        self.numericalValues[variable] = value
+        self.numericalValues[variable] = ufloat(value,sigma)
 
     def getNumericalValue(self,variable):
         if variable in self.numericalValues:
-            return self.numericalValues[variable]
+            return self.numericalValues[variable].nominal_value
 
         others = self.equivalenciesOfVariable(variable)
         for other in others:
             if other in self.numericalValues:
-                return self.numericalValues[other]
+                return self.numericalValues[other].nominal_value
 
         return None
 
@@ -339,15 +365,23 @@ class Backend(object):
         exps = self.expressions[variable]
         outexps = []
 
+        completelyNumerical = True
+
         for exp in exps:
             for var2 in [x.name for x in exp.atoms(Symbol)]:
                 newVal = self.getNumericalValue(var2)
                 if newVal is not None:
                     exp = exp.subs(var2,newVal)
+                else:
+                    completelyNumerical = False
             outexps.append(exp)
 
         outexps = list(set(outexps))
 
+        if completelyNumerical and len(outexps)==1:
+          #  print "hello", exps
+         #   print self.numericalValues
+            return [findUncertainty(exps[0],self.numericalValues)]
         return outexps
 
     def write(self,*args):
@@ -366,6 +400,9 @@ if __name__ == '__main__':
 
     a.findExpression("v",a.equations[0])
 
-    a.removeEquation(a.equations[0])
+    a.addNumericalValue("m",34)
+    a.addNumericalValue("EK",4,1)
+
+    print a.getNumericalExpressions("v")
 
     a.show()
