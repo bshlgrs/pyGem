@@ -23,10 +23,12 @@ def numberGuess(number):
         return "-"+numberGuess(-number)
     if prettyMuchAnInteger(number):
         return str(int(round(number)))
-    for denominator in range(2,10):
-      #  print denominator, number*denominator
-        if prettyMuchAnInteger(number*denominator):
-            return "%d/%d"%(round(number*denominator),denominator)
+    if abs(number-0.5<0.00001):
+        return "1/2"
+    # for denominator in range(2,10):
+    #   #  print denominator, number*denominator
+    #     if prettyMuchAnInteger(number*denominator):
+    #         return "%d/%d"%(round(number*denominator),denominator)
 
     if prettyMuchAnInteger(number**2):
         return u"sqrt%d"%(round(number**2))

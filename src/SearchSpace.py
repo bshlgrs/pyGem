@@ -71,12 +71,14 @@ class SearchSpace(tk.Canvas):
                     self.root.whiteboard.createNumber(val,sigma)
                     return
                 except Exception as e:
-                    print e
+                    pass
 
                 try: # Maybe it's a custom equation
                     lhs, rhs = string.split('=')
+                    print "rptif", lhs,rhs
                     self.root.whiteboard.addGUIEquation(lhs, rhs, {})
                 except Exception as e:
+                    print e
                     self.root.whiteboard.write("Equation could not be parsed.")
 
     def addEquation(self, event):
