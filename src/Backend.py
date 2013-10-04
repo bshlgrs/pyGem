@@ -7,7 +7,7 @@ from utilityFunctions import replaceName
 from sympy.solvers import solve
 from sympy import Symbol
 from sympy.core.numbers import Number
-from Uncertainty_calculations import findUncertainty, myUfloat
+from Uncertainty_calculations import findUncertainty, Ufloat, nominal_value
 
 class Backend(object):
     """The backend for my graphical equation manipulator.
@@ -345,16 +345,16 @@ class Backend(object):
             if other in self.numericalValues:
                 raise Exception("Inconsistent numerical value added")
 
-        self.numericalValues[variable] = myUfloat(value,sigma)
+        self.numericalValues[variable] = Ufloat(value,sigma)
 
     def getNumericalValue(self,variable):
         if variable in self.numericalValues:
-            return self.numericalValues[variable].nominal_value
+            return nominal_value(self.numericalValues[variable])
 
         others = self.equivalenciesOfVariable(variable)
         for other in others:
             if other in self.numericalValues:
-                return self.numericalValues[other].nominal_value
+                return nominal_value(self.numericalValues[other])
 
         return None
 

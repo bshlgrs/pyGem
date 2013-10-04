@@ -10,10 +10,12 @@ TODO
 
 - Add differentiation
 
-- Write my own uncertainties module
+- Fix my uncertainties module
+
 
 Done:
 
 - Uncertainties!!!
 - Add numerical values
 - You should be able to drag from an equation to a variable in an expression  and have that rewrite, which is just the opposite of the current way of doing it
+- Write my own uncertainties module
