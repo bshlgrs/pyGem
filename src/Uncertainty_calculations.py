@@ -5,6 +5,9 @@ from sympy.core.symbol import Symbol
 from sympy.core.numbers import NumberSymbol, Number
 
 from uncertainties import ufloat
+
+def myUfloat(*x):
+	return ufloat(*x)
 		
 def findUncertainty(exp, variables):
 	print "lol",exp
