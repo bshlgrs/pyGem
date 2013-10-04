@@ -14,11 +14,13 @@ a=v**2/r; a :: m*s^-2; v::m*s^-1; r::m; rotational acceleration velocity
         radius.
 p=m*v; p :: N*s;m :: kg; v :: m*s^-1; momentum mass velocity.
 F=G*m1*m2/r**2; F :: N; G :: ?; m1, m2 :: kg; r :: m; force gravity mass radius.
+F=epsilon0*q1*q2/r**2; F :: N; epsilon0 :: ?; q1, q2 :: C; r :: m; electric force coulomb's law radius.
 F=m*v**2/r; F :: N; m :: kg; v :: m*s^-1; r :: m; force rotation
         centrifugal.
 ES=0.5*k*D**2; ES :: J; k :: kg*s^-2; D::m; energy spring distance.
+F=-k*x; F :: N; k:: N; x :: m; Hooke's law spring force.
 ER=0.5*I*omega**2; ER :: J; I :: kg*m^2; omega::s^-1; rotational
         energy moment of inertia frequency.
 ET=m*c*deltaT; ET :: J; m :: kg; c :: J*kg^-1; deltaT :: K;
-            temperature specific heat energy.
+            temperature specific heat thermal energy.
 g=9.8; g::m*s^-2; gravity.

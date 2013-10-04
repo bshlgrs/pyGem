@@ -55,13 +55,6 @@ class GUIExpression(GUIEquation,Draggable):
     def makeString(self,inlist):
         if len(inlist) == 1:
             return str(inlist[0])
-        if len(inlist) == 2 and inlist[0]+inlist[1]==0:
-            a = inlist[0].__repr__()
-            b = inlist[1].__repr__()
-            # Screw it, no plus/minus (which is u"\u00B1")
-            if len(a)>len(b):
-                return b
-            return a
 
         return inlist.__repr__()
 

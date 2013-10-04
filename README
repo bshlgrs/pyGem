@@ -7,7 +7,11 @@ variables.
 
 INSTALLATION
 
-The only dependency of this program is Sympy, a Python library I use for symbolic manipulation. Sympy is fairly easy to install.
+This program depends heavily on Sympy.
+
+It also uses the uncertainties module, which has a Scipy/Numpy dependency,
+to my shame. I'll try to write my own uncertainties module without that 
+dependency ASAP.
 
 HOW TO USE
 
@@ -30,3 +34,10 @@ To solve for a variable, double click on it.
 
 To rewrite the expression for a variable, drag from a variable in its
 expression to another formula.
+
+To add a numerical value, type it into the search bar. To assign this 
+value to a variable, drag from that variable to the number. This number
+is then substituted into expressions where its variable is mentioned.
+
+Numerical values can have uncertainties. For example, enter "10+-1" into
+the search bar.

@@ -6,11 +6,14 @@ TODO
 
 - Save, open
 
-- Add numerical values
-
-- You should be able to drag from an equation to a variable in an expression  and have that rewrite, which is just the opposite of the current way of doing it
-
-- Uncertainties!!!
+- Add the cool triangle thing
 
 - Add differentiation
 
+- Write my own uncertainties module
+
+Done:
+
+- Uncertainties!!!
+- Add numerical values
+- You should be able to drag from an equation to a variable in an expression  and have that rewrite, which is just the opposite of the current way of doing it
