@@ -4,13 +4,19 @@ from sympy.core.power import Pow
 from sympy.core.symbol import Symbol
 from sympy.core.numbers import NumberSymbol, Number
 
+# try:
+# 	from uncertainties import ufloat
+# 	Ufloat = ufloat
+# except ImportError:
+# 	print "Uh, you don't have the uncertainties module."
+
 class Ufloat(object):
 	def __init__(self,value,sigma):
-		self.value = value
-		self.sigma = sigma
+		self.value = float(value)
+		self.sigma = float(sigma)
 	def __add__(self,other):
 		return Ufloat(self.value+other.value,
- 					(self.self.sigma**2+other.sigma**2)**0.5)
+ 					(self.sigma**2+other.sigma**2)**0.5)
 
 	def __mul__(self,other):
 		val = self.value*other.value
@@ -22,6 +28,9 @@ class Ufloat(object):
 
 	def __str__(self):
 		return "%f+-%f"%(self.value,self.sigma)
+
+	def __repr__(self):
+		return str(self)
 
 def findUncertainty(exp, variables):
 	print "lol",exp
@@ -41,7 +50,6 @@ def findUncertainty(exp, variables):
 	raise Exception(exp)
 
 def nominal_value(x):
-	print x
 	try:
 		return x.value
 	except AttributeError:

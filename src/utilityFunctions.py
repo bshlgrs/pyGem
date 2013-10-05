@@ -79,15 +79,12 @@ def unicodify(instr,subscripting=True):
     instr = re.sub("[0-9]+/[0-9]+[*]",change,instr)
 
     instr = instr.replace("+/-",u"\u00B1")
+    instr = instr.replace("+-",u"\u00B1")
 
     def change2(match):
         thing = match.group(0)
 
-    
-
- #   instr = instr.replace("omega",u"\u03C9")
-
-    
+    instr = instr.replace("omega",u"\u03C9")
 
     return instr
 

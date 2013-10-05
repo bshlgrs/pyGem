@@ -23,4 +23,3 @@ ER=0.5*I*omega**2; ER :: J; I :: kg*m^2; omega::s^-1; rotational
         energy moment of inertia frequency.
 ET=m*c*deltaT; ET :: J; m :: kg; c :: J*kg^-1; deltaT :: K;
             temperature specific heat thermal energy.
-g=9.8; g::m*s^-2; gravity.
