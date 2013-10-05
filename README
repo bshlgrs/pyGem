@@ -7,11 +7,7 @@ variables.
 
 INSTALLATION
 
-This program depends heavily on Sympy.
-
-It also uses the uncertainties module, which has a Scipy/Numpy dependency,
-to my shame. I'll try to write my own uncertainties module without that 
-dependency ASAP.
+This program depends heavily on Sympy. That is its only dependency.
 
 HOW TO USE
 
