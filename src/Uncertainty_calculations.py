@@ -10,7 +10,7 @@ from sympy.core.numbers import NumberSymbol, Number
 # except ImportError:
 # 	print "Uh, you don't have the uncertainties module."
 
- class Ufloat(object):
+class Ufloat(object):
 	def __init__(self,value,sigma):
 		self.value = float(value)
 		self.sigma = float(sigma)
