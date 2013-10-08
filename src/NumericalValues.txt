@@ -1,0 +1,5 @@
+G = 6.67384*10**-11 :: m^3 kg^-1 s^-2; This is the gravitational constant. 
+pi
+specific heats
+mass of electron/proton/neutron
+charge of electron
