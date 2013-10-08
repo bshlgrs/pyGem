@@ -50,7 +50,7 @@ class SearchSpace(tk.Canvas):
                                                  for x in self.matches)
 
         self.text = self.create_text(10, 10, text = matchesText,
-                anchor="nw", font=("Courier", 18, "bold"), fill="#033",
+                anchor="nw", font=(self.root.whiteboard.font, 24, "bold"), fill="#033",
                             tags="search")
 
         if event.char == '\r':

@@ -29,7 +29,7 @@ class GUIExpression(GUIEquation,Draggable):
             self.root.delete(self.varsTextID)
             self.root.delete(self.opsTextID)
 
-        self.text = self.var+"="+rewriteExpression(self.expString())
+        self.text = self.var+"="+self.expString()
         self.text = unicodify(self.text,False)
 
         varsString, opsString = splitStrings(self.text)
@@ -37,20 +37,21 @@ class GUIExpression(GUIEquation,Draggable):
         self.varsTextID = self.root.create_text((self.x,self.y),
             text = varsString,
                 fill = "#CC6633", tags = "Draggable",
-                    font = ("Courier", self.root.textSize-2, "bold"))
+                    font = (self.root.font, self.root.textSize-2, "bold"))
 
         self.opsTextID = self.root.create_text((self.x,self.y),
             text = opsString,
                 fill = "#000", tags = ("Draggable",self.tagString),
-                    font = ("Courier", self.root.textSize-2, "normal"))
+                    font = (self.root.font, self.root.textSize-2, "normal"))
 
     def expString(self):
         expString1 = self.makeString(self.root.expressions[self.var])
         numExpsString = self.makeString(self.root.getNumericalExpressions(self.var))
         if expString1 == numExpsString:
-            return expString1
+            return rewriteExpression(expString1,True)
         else:
-            return "%s=%s"%(expString1,unicodify(numExpsString))
+            return "%s=%s"%(rewriteExpression(expString1,True),
+                    rewriteExpression(unicodify(numExpsString)))
 
     def makeString(self,inlist):
         if len(inlist) == 1:

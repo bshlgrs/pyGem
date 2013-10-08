@@ -8,8 +8,8 @@ def numberPrint(number):
     
     if abs(round(number)-number) < 0.00001:
         return "%d"%number
-    if abs(round(number*2)-number*2) < 0.00001:
-        return "(%d/2)"%(number*2)
+    # if number < 80 and abs(round(number*2)-number*2) < 0.00001:
+    #     return "(%d/2)"%(number*2)
     return "%1f"%number
 
 def replaceName(exp,name1,name2):
@@ -18,26 +18,26 @@ def replaceName(exp,name1,name2):
 def prettyMuchAnInteger(x):
     return abs(x - round(x)) < 0.00001
 
-def numberGuess(number):
+def numberGuess(number, squareRooting = False):
     if number<0:
         return "-"+numberGuess(-number)
     if prettyMuchAnInteger(number):
         return str(int(round(number)))
-    if abs(number-0.5<0.00001):
+    if abs(number-0.5)<0.00001:
         return "1/2"
     # for denominator in range(2,10):
     #   #  print denominator, number*denominator
     #     if prettyMuchAnInteger(number*denominator):
     #         return "%d/%d"%(round(number*denominator),denominator)
 
-    if prettyMuchAnInteger(number**2):
+    if prettyMuchAnInteger(number**2) and number < 10 and squareRooting:
         return u"sqrt%d"%(round(number**2))
     return "%.3f"%number
 
-def rewriteExpression(instr):
+def rewriteExpression(instr, squareRooting = False):
     def change(match):
         thing = float(match.group(0))
-        return numberGuess(thing)
+        return numberGuess(thing, squareRooting)
     return re.sub("[0-9]+[.][0-9]+",change,instr)
 
 def subscript(my_string):
@@ -72,7 +72,9 @@ def unicodify(instr,subscripting=True):
 
     instr = instr.replace("sqrt",u"\u221A").replace("**2",u"\u00B2")
     def change(match):
+
         thing = match.group(0)
+        print "changing",thing
         if thing=="1/2*":
             return u"\u00BD"
         return thing

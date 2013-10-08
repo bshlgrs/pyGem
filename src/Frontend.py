@@ -13,8 +13,7 @@ class Frontend(tk.Tk):
         tk.Tk.__init__(self)
         self.wm_title("Graphical equation manipulator")
 
-        self.whiteboard = Whiteboard(self,width=600, height=600, bg = "white",
-                            bd=1, relief='raised')
+        self.whiteboard = Whiteboard(self)
         self.whiteboard.grid(row=0,column=0,rowspan=5,columnspan=1,
                                 sticky=W+E+N+S)
 
@@ -22,7 +21,8 @@ class Frontend(tk.Tk):
         self.searchLabel.grid(row=0,column=1)
 
         self.searchTextVar = tk.StringVar()
-        self.searchBarWidget = tk.Entry(self,textvariable = self.searchTextVar)
+        self.searchBarWidget = tk.Entry(self,textvariable = self.searchTextVar,
+                            font = ("Times", 16, "normal"))
         self.searchBarWidget.grid(row=1,column=1)
         self.searchBarWidget.focus()
 
@@ -35,7 +35,7 @@ class Frontend(tk.Tk):
 
         self.infoBox = tk.Text(self,width=5,height=5,bd=1,
                 relief = 'raised',bg = "#eee",
-                        font = ("Courier", 20, "normal"))
+                        font = (self.whiteboard.font, 20, "normal"))
         self.infoBox.grid(row=4,column=1, sticky=W+E+N+S)
 
         self.grid_columnconfigure(0,weight=3)
@@ -85,6 +85,7 @@ class Frontend(tk.Tk):
         thisFile = open(filename,'w')
         thisFile.write(pickle.dumps(self.whiteboard))
         thisFile.close()
+
 
 if __name__ == "__main__":
     app = Frontend()

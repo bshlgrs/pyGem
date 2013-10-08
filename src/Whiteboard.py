@@ -10,7 +10,8 @@ from time import time
 
 class Whiteboard(tk.Canvas, Backend):
     def __init__(self, root, *args, **kwargs):
-        tk.Canvas.__init__(self, *args, **kwargs)
+        tk.Canvas.__init__(self, *args, width=600, height=600, bg = "white",
+                            bd=1, relief='raised')
         Backend.__init__(self)
         self.root = root
 
@@ -24,7 +25,7 @@ class Whiteboard(tk.Canvas, Backend):
 
         self.tag_bind("Draggable","<Double-Button-1>",self.onDoubleClick)
 
-        self.textSize = 26
+        self.textSize = 36
 
         self.equivalenceLines = []
 
@@ -49,7 +50,6 @@ class Whiteboard(tk.Canvas, Backend):
         self.eqVarPopup = tk.Menu(root, tearoff=0)
         self.eqVarPopup.add_command(label="Find expression",
                 command = self.findGUIExpressionRightClick)
-        self.eqVarPopup.add_command(label="Add numerical value")
         self.eqVarPopup.add_separator()
         self.eqVarPopup.add_command(label="Delete equation",
                     command= self.deleteEquation)
@@ -58,6 +58,8 @@ class Whiteboard(tk.Canvas, Backend):
         self.eqOtherPopup = tk.Menu(root, tearoff=0)
         self.eqOtherPopup.add_command(label="Delete equation",
                     command= self.deleteEquation)
+
+        self.font = "Courier New"
 
     def allTextThings(self):
         return (self.equations + self.guiExpressions.values()
@@ -146,6 +148,7 @@ class Whiteboard(tk.Canvas, Backend):
                 return pos
 
     def addGUIEquivalence(self,var1,var2):
+        print "adding GUI equivalence, ", var1, var2
         if var1 is None or var2 is None:
             return
         if self.varDimensionsAgree(var1,var2):
@@ -183,14 +186,16 @@ class Whiteboard(tk.Canvas, Backend):
             for (pos,var1) in enumerate(partition):
                 for var2 in partition[pos+1:]:
                     newline = drawShrunkLines(self.findVariablePosition(var1),
-                            self.findVariablePosition(var2),16,16,dash=(4,4))
+                            self.findVariablePosition(var2), self.textSize-10,
+                                    self.textSize-10, dash=(4,4), width = 2)
                     self.equivalenceLines.append(newline)
 
         for numberVal in self.numbers:
             if self.numbers[numberVal]:
                 pos1 = self.findVariablePosition(self.numbers[numberVal])
                 pos2 = numberVal.getActualCanvasPosition()
-                newline = drawShrunkLines(pos1,pos2,16,16,dash=(4,4))
+                newline = drawShrunkLines(pos1, pos2, self.textSize-10,
+                                        self.textSize-10, dash=(4,4), width = 2)
                 self.equivalenceLines.append(newline)
 
     def findGUIExpression(self, var, equation):
@@ -240,3 +245,7 @@ class Whiteboard(tk.Canvas, Backend):
         box = self.root.infoBox
         box.delete('1.0','end')
         box.insert('1.0'," ".join(str(x) for x in args))
+
+if __name__ == "__main__":
+    import main
+    main.main()

@@ -1,6 +1,8 @@
 from Frontend import Frontend
 
+def main():
+	app = Frontend()
+	app.mainloop()
 
 if __name__ == "__main__":
-    app = Frontend()
-    app.mainloop()
+    main()

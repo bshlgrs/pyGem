@@ -9,8 +9,8 @@ class GUINumericalValue(Draggable):
         self.root = root
         self.value = value
 
-        if sigma is not None and sigma != 0:
-            self.valString= "%s+/-%s"%(str(value),str(sigma))
+        if sigma is not None and abs(sigma) > 0.00001 * value:
+            self.valString= "%g+/-%g"%(value,sigma)
         else:
             self.valString = str(value)
 
@@ -29,7 +29,7 @@ class GUINumericalValue(Draggable):
             self.textID = self.root.create_text((self.x,self.y),
                 text = unicodify(self.valString),
                     fill = "#C00633", tags = "Draggable",
-                        font = ("Courier", self.root.textSize-4, "bold"))
+                        font = (self.root.font, self.root.textSize-4, "bold"))
 
     def onClickPress(self,event):
         if (self.root.find_closest(event.x, event.y)[0]

@@ -10,8 +10,13 @@ TODO
 
 - Add differentiation
 
-- Fix my uncertainties module
+- Fix my uncertainties module wrt powers
 
+- Make numerical constants
+
+- Numerical input with units
+
+- Fix right click menus, including for the equation (it says you can add numerical values)
 
 Done:
 

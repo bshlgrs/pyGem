@@ -4,11 +4,11 @@ from sympy.core.power import Pow
 from sympy.core.symbol import Symbol
 from sympy.core.numbers import NumberSymbol, Number
 
-# try:
-# 	from uncertainties import ufloat
-# 	Ufloat = ufloat
-# except ImportError:
-# 	print "Uh, you don't have the uncertainties module."
+try:
+	from uncertainties import ufloat
+	Ufloat = ufloat
+except ImportError:
+	print "Uh, you don't have the uncertainties module."
 
 class Ufloat(object):
 	def __init__(self,value,sigma):
@@ -16,6 +16,10 @@ class Ufloat(object):
 		self.sigma = float(sigma)
 	def __add__(self,other):
 		return Ufloat(self.value+other.value,
+ 					(self.sigma**2+other.sigma**2)**0.5)
+
+	def __sub__(self,other):
+		return Ufloat(self.value-other.value,
  					(self.sigma**2+other.sigma**2)**0.5)
 
 	def __mul__(self,other):
