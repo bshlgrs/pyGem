@@ -1,3 +1,10 @@
+"""
+This module propogates uncertainties as described here:
+http://www.mso.anu.edu.au/~pfrancis/phys1101/Propagation_Equations.pdf
+
+"""
+
+
 from sympy.core.mul import Mul
 from sympy.core.add import Add
 from sympy.core.power import Pow

@@ -1,22 +1,16 @@
 TODO
 
 - Finish an equation renderer, integrate that with my code
-
 - Make the code packageable
-
 - Save, open
-
-- Add the cool triangle thing
-
-- Add differentiation
-
-- Fix my uncertainties module wrt powers
-
+- Fix my uncertainties module wrt powers etc.
+	This mostly just involves implementing the direct partial derivative method.
 - Make numerical constants
-
 - Numerical input with units
-
 - Fix right click menus, including for the equation (it says you can add numerical values)
+- Equate variables in the same equation
+- Add the cool triangle thing
+- Add differentiation
 
 Done:
 
