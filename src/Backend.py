@@ -397,11 +397,12 @@ if __name__ == '__main__':
     a.addEquivalency(["m","m2"])
     a.addEquivalency(["EK","EP"])
 
-    a.findExpression("v",a.equations[0])
+    a.findExpression("h",a.equations[1])
+    a.rewriteUsingEquation("h","EP",a.equations[0])
 
-    a.addNumericalValue("m",34)
-    a.addNumericalValue("EK",4,1)
+    a.addNumericalValue("v",34)
+    a.addNumericalValue("g",9.8)
 
-    print a.getNumericalExpressions("v")
+    print a.getNumericalExpressions("h")
 
     a.show()

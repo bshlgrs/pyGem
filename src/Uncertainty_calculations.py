@@ -13,7 +13,6 @@ from sympy.core.numbers import NumberSymbol, Number
 
 try:
 	from uncertainties import ufloat
-	Ufloat = ufloat
 except ImportError:
 	print "Uh, you don't have the uncertainties module."
 
@@ -44,13 +43,17 @@ class Ufloat(object):
 		return str(self)
 
 def findUncertainty(exp, variables):
-	print "lol",exp
+	print exp, exp.func, exp.args
 	if exp.func == Mul:
-		return findUncertainty(exp.args[0],variables) * \
-							findUncertainty(exp.args[1],variables)
+		out = Ufloat(1,0)
+		for arg in exp.args:
+			out *= findUncertainty(arg,variables)
+		return out 
 	if exp.func == Add:
-		return findUncertainty(exp.args[0],variables) + \
-							findUncertainty(exp.args[1],variables)
+		out = Ufloat(0,0)
+		for arg in exp.args:
+			out += findUncertainty(arg,variables)
+		return out 	
 	if exp.func == Pow:
 		return (findUncertainty(exp.args[0],variables) ** 
 					findUncertainty(exp.args[1],variables))
