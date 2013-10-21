@@ -28,7 +28,6 @@ class GUIEquation(Equation, Draggable):
         return "GUIEquation %s"%censorUnicode(self.text)
 
     def __del__(self):
-        print "lolololololol"
         if self.varsTextID:
             self.root.delete(self.varsTextID)
             self.root.delete(self.opsTextID)

@@ -11,12 +11,12 @@ s=0.5*a*t**2; s :: m; a :: m*s^-2; t :: s; u :: m*s^-1; position
         acceleration time final velocity.
 F=dp/dt; F :: N; dp :: N*s; dt :: s; force momentum time.
 a=v**2/r; a :: m*s^-2; v::m*s^-1; r::m; rotational acceleration velocity
-        radius.
+        radius circular.
 p=m*v; p :: N*s;m :: kg; v :: m*s^-1; momentum mass velocity.
 F=G*m*M/r**2; F :: N; G :: m^3 kg^-1 s^-2; m1, m2 :: kg; r :: m; force gravity mass radius.
-F=epsilon0*qa*qb/r**2; F :: N; epsilon0 :: ?; q1, q2 :: C; r :: m; electric force coulomb's law radius.
+F=epsilon0*qa*qb/r**2; F :: N; epsilon0 :: ?; q1, q2 :: C; r :: m; electric force coulomb's law radius charge.
 F=m*v**2/r; F :: N; m :: kg; v :: m*s^-1; r :: m; force rotation
-        centrifugal.
+        centrifugal circular.
 ES=0.5*k*D**2; ES :: J; k :: kg*s^-2; D::m; energy spring distance.
 F=-k*x; F :: N; k:: N; x :: m; Hooke's law spring force.
 ER=0.5*I*omega**2; ER :: J; I :: kg*m^2; omega::s^-1; rotational

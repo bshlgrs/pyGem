@@ -1,6 +1,7 @@
 import Tkinter as tk
 import EquationParser
 from utilityFunctions import rewriteExpression, unicodify
+import time
 
 class SearchSpace(tk.Canvas):
     """
@@ -22,7 +23,9 @@ class SearchSpace(tk.Canvas):
         self.text = None
         self.matches = None
 
-        self.bind("<ButtonPress-1>", self.addEquation)
+        self.lastClickTime = time.time()
+
+        self.bind("<ButtonPress-1>", self.onClick)
 
     def key(self, event):
         def similarity(list1, list2):
@@ -81,9 +84,14 @@ class SearchSpace(tk.Canvas):
                     print e
                     self.root.whiteboard.write("Equation could not be parsed.")
 
-    def addEquation(self, event):
+    def onClick(self, event):
         if not self.matches:
             return
+
+        if time.time() - self.lastClickTime < 0.4:
+            return
+
+        self.lastClickTime = time.time()
 
         bBox = self.bbox("search")
         numberOfLines = len(self.matches) * 2 - 1

@@ -60,6 +60,7 @@ class Whiteboard(tk.Canvas, Backend):
                     command= self.deleteEquation)
 
         self.font = "Courier New"
+        
 
     def allTextThings(self):
         return (self.equations + self.guiExpressions.values()

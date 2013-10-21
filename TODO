@@ -1,6 +1,5 @@
 TODO
 
-- Finish an equation renderer, integrate that with my code
 - Make the code packageable
 - Save, open
 - Fix my uncertainties module wrt powers etc.
@@ -9,8 +8,10 @@ TODO
 - Numerical input with units
 - Fix right click menus, including for the equation (it says you can add numerical values)
 - Equate variables in the same equation
-- Add the cool triangle thing
-- Add differentiation
+- Show a warning message when an inappropriate approximation is made (eg using non-relativistic kinetic energy when the numerical value for velocity is too high.)
+- Make typing v=40 work
+- Plus/minus
+- When you click on a thing, a printable version gets put in your text viewy bit
 
 Done:
 
@@ -18,3 +19,10 @@ Done:
 - Add numerical values
 - You should be able to drag from an equation to a variable in an expression  and have that rewrite, which is just the opposite of the current way of doing it
 - Write my own uncertainties module
+
+Wishlist:
+
+Rewrite it as a web app in Javascript and HTML5.
+- Add the cool triangle thing
+- Add differentiation
+- Finish an equation renderer, integrate that with my code
