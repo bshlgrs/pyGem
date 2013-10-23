@@ -3,6 +3,7 @@
 from Frontend import Frontend
 
 def main():
+	print "Loading GEM version 0.1. This might take ten seconds..."
 	app = Frontend()
 	app.mainloop()
 

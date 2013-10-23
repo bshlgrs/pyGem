@@ -7,7 +7,13 @@ variables.
 
 INSTALLATION
 
-This program depends heavily on Sympy. That is its only dependency.
+This program depends heavily on Sympy.
+
+To my shame, the program currently has a dependency on the uncertainties module,
+which itself requires Scipy.
+
+If you install Python, then Scipy, then uncertainties, then Sympy, then run 
+main.py, this should work.
 
 HOW TO USE
 

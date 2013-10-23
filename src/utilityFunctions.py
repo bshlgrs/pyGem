@@ -68,13 +68,14 @@ def unicodify(instr,subscripting=True):
         try:
             instr = subscript(instr)
         except Exception:
-            print "Gah, you should fix the subscripter..."
+            pass
+            #print "Gah, you should fix the subscripter..."
 
     instr = instr.replace("sqrt",u"\u221A").replace("**2",u"\u00B2")
     def change(match):
 
         thing = match.group(0)
-        print "changing",thing
+      #  print "changing",thing
         if thing=="1/2*":
             return u"\u00BD"
         return thing

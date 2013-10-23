@@ -68,3 +68,5 @@ def nominal_value(x):
 		return x.value
 	except AttributeError:
 		return x.nominal_value
+
+Ufloat = ufloat

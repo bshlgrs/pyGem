@@ -43,7 +43,6 @@ class GUINumericalValue(Draggable):
         self.beingDragged = False
 
         if (self.root.find_closest(event.x, event.y)[0] == self.textID):
-            print self.root.__dict__
             if self.root.clickData["variable"]:
                 self.root.addNumericalValueToGUI(self.root.clickData["variable"],self)
 

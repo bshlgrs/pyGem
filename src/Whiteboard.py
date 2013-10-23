@@ -149,7 +149,6 @@ class Whiteboard(tk.Canvas, Backend):
                 return pos
 
     def addGUIEquivalence(self,var1,var2):
-        print "adding GUI equivalence, ", var1, var2
         if var1 is None or var2 is None:
             return
         if self.varDimensionsAgree(var1,var2):
@@ -216,7 +215,6 @@ class Whiteboard(tk.Canvas, Backend):
         self.guiExpressions[var].draw()
 
     def deleteEquation(self,eqToDelete = None):
-        print "deleting"
         if eqToDelete is None:
             eqToDelete = self.clickData["clickedObject"]
 
