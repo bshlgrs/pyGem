@@ -51,7 +51,8 @@ class GUIExpression(GUIEquation,Draggable):
             return rewriteExpression(expString1,True)
         else:
             return "%s=%s"%(rewriteExpression(expString1,True),
-                    rewriteExpression(unicodify(numExpsString)))
+                    rewriteExpression(numExpsString))
+
 
     def makeString(self,inlist):
         if len(inlist) == 1:

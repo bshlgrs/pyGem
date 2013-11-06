@@ -4,13 +4,13 @@ from sympy import S
 
 def numberPrint(number):
     #TODO: Reconsider this:
-    return "%4f"%number
+    return "%2f"%number
     
     if abs(round(number)-number) < 0.00001:
         return "%d"%number
     # if number < 80 and abs(round(number*2)-number*2) < 0.00001:
     #     return "(%d/2)"%(number*2)
-    return "%1f"%number
+    return "%2f"%number
 
 def replaceName(exp,name1,name2):
     return exp.replace(S(name1),S(name2))
@@ -32,7 +32,7 @@ def numberGuess(number, squareRooting = False):
 
     if prettyMuchAnInteger(number**2) and number < 10 and squareRooting:
         return u"sqrt%d"%(round(number**2))
-    return "%.3f"%number
+    return "%.2f"%number
 
 def rewriteExpression(instr, squareRooting = False):
     def change(match):
