@@ -1,21 +1,27 @@
-----README----
+Readme
+=====
 
 This is the start of a graphical equation manipulator. This software
 aspires to assist in calculations in the kinds of physics problems which
 involve writing down equations, equating variables, and solving for
 variables.
 
-INSTALLATION
+It has been made obselete by [its Coffeescript successor](https://github.com/MatthewJA/Graphical-Equation-Manipulator).
+
+Installation
+------------
 
 This program depends heavily on Sympy.
 
 To my shame, the program currently has a dependency on the uncertainties module,
 which itself requires Scipy.
 
-If you install Python, then Scipy, then uncertainties, then Sympy, then run 
+If you install Python, then Scipy, then uncertainties, then Sympy, then run
 main.py, this should work.
 
-HOW TO USE
+
+How to use
+----------
 
 The main program is in src/main.py.
 
@@ -37,7 +43,7 @@ To solve for a variable, double click on it.
 To rewrite the expression for a variable, drag from a variable in its
 expression to another formula.
 
-To add a numerical value, type it into the search bar. To assign this 
+To add a numerical value, type it into the search bar. To assign this
 value to a variable, drag from that variable to the number. This number
 is then substituted into expressions where its variable is mentioned.
 
