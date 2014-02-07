@@ -8,6 +8,8 @@ variables.
 
 It has been made obselete by [its Coffeescript successor](https://github.com/MatthewJA/Graphical-Equation-Manipulator).
 
+You can watch a demo [here](http://www.youtube.com/watch?v=16eiGLrX248).
+
 Installation
 ------------
 
